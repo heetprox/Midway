@@ -8,7 +8,7 @@ import {
   useSwitchChain 
 } from "wagmi";
 import { Address } from "viem";
-import { optimismSepolia, sepolia, zoraSepolia } from "wagmi/chains";
+import { optimismSepolia, sepolia as ethSepolia, zoraSepolia , modeTestnet as modeSepolia } from "wagmi/chains";
 import MidPayCore from "../abi/MidPayCore.json";
 import fakeUSDC from "../abi/FakeUSDC.json";
 import { toFixed } from "../utils/bigIntHelpers";
@@ -16,31 +16,8 @@ import { getUsdcAddress } from "../utils/addressHelpers";
 import { OptimismCore } from "@/context/constants";
 
 // Define supported chains
-const SUPPORTED_CHAINS = [optimismSepolia, sepolia, zoraSepolia] as const;
+const SUPPORTED_CHAINS = [optimismSepolia, ethSepolia, zoraSepolia, modeSepolia] as const;
 const DEFAULT_CHAIN = optimismSepolia;
-
-const modeSepolia = {
-  id: 919,
-  name: 'Mode Sepolia',
-  network: 'mode-sepolia',
-  nativeCurrency: {
-    decimals: 18,
-    name: 'Ether',
-    symbol: 'ETH',
-  },
-  rpcUrls: {
-    default: {
-      http: ['https://sepolia.mode.network'],
-    },
-    public: {
-      http: ['https://sepolia.mode.network'],
-    },
-  },
-  blockExplorers: {
-    default: { name: 'Mode Sepolia Explorer', url: 'https://sepolia.explorer.mode.network' },
-  },
-  testnet: true,
-} as const;
 
 export default function BalanceDialog() {
   const { address } = useAccount();
@@ -56,8 +33,8 @@ export default function BalanceDialog() {
 
   // Read MidPay balance from core contract on Optimism Sepolia
   const {
-    data: omniPayCoreBalance,
-    isLoading: isOmniPayCoreBalanceLoading,
+    data: MidPayCoreBalance,
+    isLoading: isMidPayCoreBalanceLoading,
     error: coreBalanceError,
   } = useReadContract({
     address: OptimismCore as Address,
@@ -99,11 +76,11 @@ export default function BalanceDialog() {
         <h2 className="card-title text-secondary">Your MidPay Balance</h2>
         <p className="flex justify-center align-middle gap-1">
           <span className="text-3xl font-bold inline-flex items-center">
-            {isOmniPayCoreBalanceLoading
+            {isMidPayCoreBalanceLoading
               ? "Loading..."
               : coreBalanceError
               ? "Error"
-              : toFixed(omniPayCoreBalance as bigint)}
+              : toFixed(MidPayCoreBalance as bigint)}
           </span>
           <span className="inline-flex items-center">USDC</span>
         </p>
