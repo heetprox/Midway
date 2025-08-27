@@ -1,7 +1,15 @@
-
 @font-face {
     font-family: "Brown-beige";
     src: url("/fonts/Brown-beige.otf") format("opentype");
+}
+
+@font-face {
+    font-family: "MilanoGraphicFestival-Regular";
+    src: url("/fonts/MilanoGraphicFestival-Regular.ttf") format("truetype");
+}
+
+.s-font {
+    font-family: "MilanoGraphicFestival-Regular";
 }
 
 .b-font {

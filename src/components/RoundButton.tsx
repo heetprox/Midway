@@ -3,7 +3,7 @@
 import Link from 'next/link'
 import React, { useState } from 'react'
 
-const RoundButton = ({ text1, text2, link }: { text1: string, text2: string, link: string }) => {
+const RoundButton = ({ text1, text2, link, className }: { text1: string, text2: string, link: string, className?: string }) => {
 
     const [isHovered, setIsHovered] = useState(false);
     return (
@@ -14,6 +14,9 @@ const RoundButton = ({ text1, text2, link }: { text1: string, text2: string, lin
 
                         </div>
             <div className={`rounded-full w-full aspect-square relative cursor-pointer  flex flex-col ${isHovered ? "translate-3 transition-all duration-300" : "translate-0 transition-all duration-300"}  justify-center  items-center b-font bg-[#181917] text-[#FEFBEC]`}
+            style={{
+                rotate: `${className}deg`,
+            }}
                 onMouseEnter={() => setIsHovered(true)}
                 onMouseLeave={() => setIsHovered(false)}
             >

@@ -9,16 +9,27 @@ export default function Home() {
       }}
     >
       <div className="flex flex-col justify-between w-full h-full">
-        <RoundButton text1="Connect" text2="Wallet" link="/" />
+        <div className=""></div>
+        <RoundButton text1="Connect" className="-20" text2="Wallet" link="/" />
         <div className="flex flex-col items-center w-full">
           <div className="b-font leading-none"
             style={{
-              fontSize: "clamp(1.25rem, 13vw, 200rem)",
+              fontSize: "clamp(1.25rem, 12vw, 200rem)",
             }}
-          >Midway</div>
+          >
+            Midway
+          </div>
+
+          <div className="s-font leading-none"
+            style={{
+              fontSize: "clamp(1.25rem,2vw, 200rem)",
+            }}
+          >
+            Deposit Once, Pay Anywhere
+          </div>
         </div>
 
-        <RoundButton text1="GIVE IT ★" text2="GITHUB" link="/" />
+        <RoundButton text1="GIVE IT ★" className="20" text2="GITHUB" link="/" />
 
       </div>
     </div>
