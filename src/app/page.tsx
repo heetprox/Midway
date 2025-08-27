@@ -4,12 +4,22 @@
 import RoundButton from "@/components/RoundButton";
 import Image from "next/image";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { useRouter } from "next/navigation";
+import { useEffect } from "react";
 
 
 const Home = () => {
   const { address, isConnected } = useAccount();
   const { connect, connectors } = useConnect();
   const { disconnect } = useDisconnect();
+  const router = useRouter();
+
+  // Redirect to dashboard when wallet connects
+  useEffect(() => {
+    if (isConnected && address) {
+      router.push('/dashboard');
+    }
+  }, [isConnected, address, router]);
   return (
     <div className="w-full flex flex-col justify-center items-center h-[100vh] min-h-screen bg-[#FEFBEC]"
       style={{

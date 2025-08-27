@@ -40,7 +40,7 @@ const ChainSelector = ({ className }: ChainSelectorProps) => {
   if (isUnsupportedChain) {
     return (
       <button
-        className="btn btn-error"
+        className="bg-red-600 text-white px-6 py-3 rounded-full hover:bg-red-700 transition-all duration-300 b-font"
         onClick={() => switchToChain("Optimism")}
       >
         Switch to Optimism Sepolia
@@ -60,7 +60,7 @@ const ChainSelector = ({ className }: ChainSelectorProps) => {
         }
       }}
       value={currentChain?.name || ""}
-      className={`select select-md select-primary text-lg ${className}`}
+      className={`border border-[#181917]/30 rounded-lg px-4 py-2 text-lg b-font bg-white focus:outline-none focus:border-[#181917] ${className}`}
     >
       {chainList.map((c) => (
         <option key={c.id} value={c.name}>

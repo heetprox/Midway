@@ -112,19 +112,19 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
   const isWithdrawDisabled = !isAmountValid || isWithdrawLoading || isConfirming;
 
   return (
-    <div className={`card bg-base-100 w-fit shadow-xl ${className}`}>
-      <div className="card-body">
-        <h2 className="card-title">Select a chain</h2>
+    <div className={`bg-white rounded-lg shadow-xl p-6 w-fit ${className}`}>
+      <div className="mb-6">
+        <h2 className="b-font text-xl mb-4">Select a chain</h2>
         <ChainSelector />
       </div>
       
-      <div className="divider" />
+      <div className="border-t border-[#181917]/20 my-6" />
       
-      <div className="card-body">
-        <h2 className="card-title">Amount</h2>
+      <div className="mb-6">
+        <h2 className="b-font text-xl mb-4">Amount</h2>
         
         {/* Balance display */}
-        <div className="text-sm text-gray-600 mb-2">
+        <div className="text-sm text-gray-600 mb-2 s-font">
           Available balance: {isBalanceLoading 
             ? "Loading..." 
             : balanceError 
@@ -150,7 +150,7 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
           {/* Max button */}
           <button
             onClick={() => setAmount(maxWithdrawAmount)}
-            className="btn btn-sm btn-outline ml-2"
+            className="border border-[#181917] text-[#181917] px-4 py-2 rounded-full hover:bg-[#181917] hover:text-[#FEFBEC] transition-all duration-300 b-font ml-2 disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isBalanceLoading || maxWithdrawAmount === 0}
           >
             Max
@@ -159,7 +159,7 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
           <button
             onClick={handleWithdraw}
             disabled={isWithdrawDisabled}
-            className="btn btn-primary ml-8"
+            className="bg-[#181917] text-[#FEFBEC] px-6 py-3 rounded-full hover:bg-[#181917]/80 transition-all duration-300 b-font ml-8 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isWithdrawLoading || isConfirming ? "Processing..." : "Withdraw"}
           </button>
@@ -167,7 +167,7 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
 
         {/* Status messages */}
         {(isWithdrawLoading || isConfirming) && (
-          <div className="text-info">
+          <div className="text-blue-600 mt-4 s-font">
             {isWithdrawLoading 
               ? "Confirm in your wallet..." 
               : "Confirming transaction..."
@@ -176,27 +176,27 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
         )}
         
         {isWithdrawSuccess && (
-          <div className="text-success max-w-xs">
+          <div className="text-green-600 max-w-xs mt-4 s-font">
             Withdrawal successful! Your tokens will arrive at your wallet soon.
             Refreshing page in 5 seconds...
           </div>
         )}
         
         {withdrawError && (
-          <div className="text-error max-w-xs">
+          <div className="text-red-600 max-w-xs mt-4 s-font">
             Withdrawal failed: {withdrawError.message}
           </div>
         )}
         
         {balanceError && (
-          <div className="text-warning text-sm">
+          <div className="text-orange-600 text-sm mt-4 s-font">
             Unable to load balance. Please check your connection.
           </div>
         )}
 
         {/* Amount validation */}
         {amount > 0 && amount > maxWithdrawAmount && (
-          <div className="text-warning text-sm">
+          <div className="text-orange-600 text-sm mt-4 s-font">
             Amount exceeds available balance
           </div>
         )}

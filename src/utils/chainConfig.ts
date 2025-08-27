@@ -17,12 +17,21 @@ export const publicClient = createPublicClient({
   transport: http(),
 });
 
-// Create wagmi config using the new v2 API
+// Create wagmi config using the new v2 API with modern wallet detection
 export const config = createConfig({
   chains,
   connectors: [
     injected({
-      shimDisconnect: true,
+      target: 'metaMask',
+      shimDisconnect: false,
+    }),
+    injected({
+      target: () => ({
+        id: 'injected',
+        name: 'Injected Wallet',
+        provider: typeof window !== 'undefined' ? window.ethereum : undefined,
+      }),
+      shimDisconnect: false,
     }),
   ],
   transports: {
@@ -31,4 +40,5 @@ export const config = createConfig({
     [modeSepolia.id]: http(),
     [zoraSepolia.id]: http(),
   },
+  ssr: true,
 });

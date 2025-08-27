@@ -70,10 +70,10 @@ export default function BalanceDialog() {
   const chainName = currentChain?.name || 'Unknown Chain';
 
   return (
-    <div className="card w-96 bg-base-100 shadow-xl">
+    <div className="bg-white rounded-lg shadow-xl p-6 w-96">
       {/* MidPay Balance Section */}
-      <div className="card-body">
-        <h2 className="card-title text-secondary">Your MidPay Balance</h2>
+      <div className="mb-6">
+        <h2 className="b-font text-xl text-[#181917] mb-4">Your MidPay Balance</h2>
         <p className="flex justify-center align-middle gap-1">
           <span className="text-3xl font-bold inline-flex items-center">
             {isMidPayCoreBalanceLoading
@@ -87,19 +87,19 @@ export default function BalanceDialog() {
         
         {/* Error message for core balance */}
         {coreBalanceError && (
-          <div className="text-error text-sm text-center mt-2">
+          <div className="text-red-600 text-sm text-center mt-2 s-font">
             Unable to load MidPay balance
           </div>
         )}
       </div>
 
-      <div className="divider"></div>
+      <div className="border-t border-[#181917]/20 my-6"></div>
 
       {/* Wallet Balance Section */}
-      <div className="card-body">
-        <h2 className="card-title text-secondary">
+      <div className="mb-6">
+        <h2 className="b-font text-xl text-[#181917] mb-4">
           Your Wallet Balance
-          <span className="text-sm font-normal text-gray-500">
+          <span className="text-sm font-normal text-gray-500 s-font">
             ({chainName})
           </span>
         </h2>
@@ -116,7 +116,7 @@ export default function BalanceDialog() {
 
         {/* Error message for wallet balance */}
         {walletBalanceError && (
-          <div className="text-error text-sm text-center mt-2">
+          <div className="text-red-600 text-sm text-center mt-2 s-font">
             Unable to load wallet balance
             {!getUsdcAddress(chainId) && (
               <div className="text-xs mt-1">
@@ -128,7 +128,7 @@ export default function BalanceDialog() {
 
         {/* Chain switching hint */}
         {chainId && !SUPPORTED_CHAINS.some(chain => chain.id === chainId) && (
-          <div className="text-warning text-sm text-center mt-2">
+          <div className="text-orange-600 text-sm text-center mt-2 s-font">
             Please switch to a supported network
           </div>
         )}
@@ -136,15 +136,15 @@ export default function BalanceDialog() {
 
       {/* Connection status */}
       {!address && (
-        <div className="card-body pt-0">
-          <div className="text-warning text-sm text-center">
+        <div className="pt-0">
+          <div className="text-orange-600 text-sm text-center s-font">
             Please connect your wallet to view balances
           </div>
         </div>
       )}
 
       {/* Refresh indicator */}
-      <div className="text-xs text-gray-400 text-center pb-2">
+      <div className="text-xs text-gray-400 text-center mt-4 s-font">
         Balances update every 30 seconds
       </div>
     </div>

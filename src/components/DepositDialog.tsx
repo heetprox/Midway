@@ -114,14 +114,14 @@ export default function DepositDialog({ className }: DepositDialogProps) {
   };
 
   return (
-    <div className={`card bg-base-100 w-fit shadow-xl ${className}`}>
-      <div className="card-body">
-        <h2 className="card-title">Select a chain</h2>
+    <div className={`bg-white rounded-lg shadow-xl p-6 w-fit ${className}`}>
+      <div className="mb-6">
+        <h2 className="b-font text-xl mb-4">Select a chain</h2>
         <ChainSelector />
       </div>
-      <div className="divider" />
-      <div className="card-body">
-        <h2 className="card-title">Amount</h2>
+      <div className="border-t border-[#181917]/20 my-6" />
+      <div className="mb-6">
+        <h2 className="b-font text-xl mb-4">Amount</h2>
         <div className="flex flex-row gap-1">
           <input
             className="text-right outline-none border-none bg-inherit text-3xl font-bold inline-flex items-center w-32"
@@ -135,7 +135,7 @@ export default function DepositDialog({ className }: DepositDialogProps) {
           <span className="inline-flex items-center">USDC</span>
           {needsApproval && (
             <button
-              className="btn btn-primary ml-8"
+              className="bg-[#181917] text-[#FEFBEC] px-6 py-3 rounded-full hover:bg-[#181917]/80 transition-all duration-300 b-font ml-8 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isApproveLoading || !address}
               onClick={handleApprove}
             >
@@ -144,7 +144,7 @@ export default function DepositDialog({ className }: DepositDialogProps) {
           )}
           {!needsApproval && (
             <button
-              className="btn btn-primary ml-8"
+              className="bg-[#181917] text-[#FEFBEC] px-6 py-3 rounded-full hover:bg-[#181917]/80 transition-all duration-300 b-font ml-8 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isAllowanceLoading || !address || isDepositLoading}
               onClick={handleDeposit}
             >
@@ -153,10 +153,10 @@ export default function DepositDialog({ className }: DepositDialogProps) {
           )}
         </div>
         {(isDepositLoading || isApproveLoading) && (
-          <div className="text-info">Confirm in your wallet...</div>
+          <div className="text-blue-600 mt-4 s-font">Confirm in your wallet...</div>
         )}
         {isDepositSuccess && (
-          <div className="text-success max-w-xs">
+          <div className="text-green-600 max-w-xs mt-4 s-font">
             Deposit successful! Your balance will be updated soon.
           </div>
         )}
