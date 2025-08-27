@@ -1,7 +1,15 @@
+
+"use client";
+
 import RoundButton from "@/components/RoundButton";
 import Image from "next/image";
+import { useAccount, useConnect, useDisconnect } from "wagmi";
 
-export default function Home() {
+
+const Home = () => {
+  const { address, isConnected } = useAccount();
+  const { connect, connectors } = useConnect();
+  const { disconnect } = useDisconnect();
   return (
     <div className="w-full flex flex-col justify-center items-center h-[100vh] min-h-screen bg-[#FEFBEC]"
       style={{
@@ -13,6 +21,7 @@ export default function Home() {
           style={{
             padding: "0 clamp(1.25rem, 2vw, 200rem)",
           }}
+          onClick={() => connect({ connector: connectors[0] })}
         >
           <RoundButton text1="Connect" className="-20" text2="Wallet" link="/" />
         </div>
@@ -44,3 +53,4 @@ export default function Home() {
     </div>
   );
 }
+export default Home;
