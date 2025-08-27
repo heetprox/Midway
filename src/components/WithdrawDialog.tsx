@@ -45,7 +45,6 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
     }
   }, [chainId, switchChain]);
 
-  // Read balance from OmniPayCore contract on Optimism Sepolia
   const {
     data: MidPayCoreBalance,
     isLoading: isBalanceLoading,
@@ -89,14 +88,14 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
   const handleWithdraw = () => {
     if (!address || !chainId) return;
 
-    const omniPayAddress = getMidPayAddress(chainId);
-    if (!omniPayAddress) {
-      console.error('OmniPay address not found for chain:', chainId);
+    const midpayAddress = getMidPayAddress(chainId);
+    if (!midpayAddress) {
+      console.error('Midpay address not found for chain:', chainId);
       return;
     }
 
     withdraw({
-      address: omniPayAddress as Address,
+      address: midpayAddress as Address,
       abi: MidPayClient.abi,
       functionName: "withdraw",
       args: [toBigInt(debouncedAmount)],
