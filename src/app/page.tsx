@@ -8,9 +8,14 @@ export default function Home() {
         padding: "clamp(1.25rem, 2vw, 200rem)",
       }}
     >
-      <div className="flex flex-col justify-between w-full h-full">
-        <div className=""></div>
-        <RoundButton text1="Connect" className="-20" text2="Wallet" link="/" />
+      <div className="flex flex-col justify-center w-full h-full">
+        <div className="w-full flex justify-end"
+          style={{
+            padding: "0 clamp(1.25rem, 2vw, 200rem)",
+          }}
+        >
+          <RoundButton text1="Connect" className="-20" text2="Wallet" link="/" />
+        </div>
         <div className="flex flex-col items-center w-full">
           <div className="b-font leading-none"
             style={{
@@ -28,9 +33,13 @@ export default function Home() {
             Deposit Once, Pay Anywhere
           </div>
         </div>
-
-        <RoundButton text1="GIVE IT ★" className="20" text2="GITHUB" link="/" />
-
+        <div className="w-full flex justify-start"
+          style={{
+            padding: "0 clamp(1.25rem, 2vw, 200rem)",
+          }}
+        >
+          <RoundButton text1="GIVE IT ★" className="20" text2="GITHUB" link="/" />
+        </div>
       </div>
     </div>
   );
