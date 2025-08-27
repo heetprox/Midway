@@ -1,6 +1,8 @@
 import type { Metadata } from "next";
 import "./globals.css";
 import "./fonts.css";
+import { WagmiProvider } from "wagmi";
+import { config } from "@/utils/chainConfig";
 
 export const metadata: Metadata = {
   title: "Midway",
@@ -17,7 +19,9 @@ export default function RootLayout({
       <body
         className={`bg-[#FEFBEC] antialiased`}
       >
-        {children}
+        <WagmiProvider config={config}>
+          {children}
+        </WagmiProvider>
       </body>
     </html>
   );
