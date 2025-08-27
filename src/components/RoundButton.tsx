@@ -7,7 +7,7 @@ const RoundButton = ({ text1, text2, link, className }: { text1: string, text2: 
 
     const [isHovered, setIsHovered] = useState(false);
     return (
-        <div className="aspect-square relative w-[12vw]">
+        <div className="aspect-square relative w-[40vw] md:w-[12vw]">
             <div className={`absolute 
                         border-2 border-[#181917]
                         aspect-square top-0 left-0 w-full h-full bg-[#181917]/10 rounded-full translate-7`}>
