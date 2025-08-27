@@ -1,35 +1,34 @@
-import { createPublicClient, http } from "vi        
-import { configureChains, createConfig } from "wagmi";
+import { createPublicClient, http } from "viem";
+import { createConfig } from "wagmi";
 import {
   optimismSepolia,
-  sepolia,
-  zoraTestnet,
-  modeTestnet,
+  sepolia as ethSepolia,
+  modeTestnet as modeSepolia,
+  zoraSepolia,
 } from "wagmi/chains";
-import { InjectedConnector } from "wagmi/connectors/injected";
-import { publicProvider } from "wagmi/providers/public";
+import { injected } from "wagmi/connectors";
 
+// Define chains with optimismSepolia as the first/default chain
+const chains = [optimismSepolia, ethSepolia, modeSepolia, zoraSepolia] as const;
 
-const { chains, publicClient } = configureChains(
-  [optimismSepolia, sepolia, zoraTestnet, modeTestnet],
-  [publicProvider()]
-);
-
-export const optimismProvider = createPublicClient({
+// Create public client for Optimism Sepolia
+export const publicClient = createPublicClient({
   chain: optimismSepolia,
   transport: http(),
 });
 
+// Create wagmi config using the new v2 API
 export const config = createConfig({
-  autoConnect: true,
+  chains,
   connectors: [
-    new InjectedConnector({
-      chains,
-      options: {
-        name: "Injected",
-        shimDisconnect: true,
-      },
+    injected({
+      shimDisconnect: true,
     }),
   ],
-  publicClient,
+  transports: {
+    [optimismSepolia.id]: http(),
+    [ethSepolia.id]: http(),
+    [modeSepolia.id]: http(),
+    [zoraSepolia.id]: http(),
+  },
 });
