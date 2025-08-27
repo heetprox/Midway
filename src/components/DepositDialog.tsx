@@ -7,7 +7,7 @@ import {
   useChainId,
   useWaitForTransactionReceipt,
 } from "wagmi";
-import { getOmniPayAddress, getUsdcAddress } from "../utils/addressHelpers";
+import { getMidPayAddress, getUsdcAddress } from "../utils/addressHelpers";
 import MidClient from "../abi/MidPayClient.json";
 import fakeUSDC from "../abi/FakeUSDC.json";
 import { useEffect, useState } from "react";
@@ -38,7 +38,7 @@ export default function DepositDialog({ className }: DepositDialogProps) {
     abi: fakeUSDC.abi,
     chainId: chainId,
     functionName: "allowance",
-    args: [address, getOmniPayAddress(chainId)],
+    args: [address, getMidPayAddress(chainId)],
   });
 
   // Approve contract write
@@ -92,7 +92,7 @@ export default function DepositDialog({ className }: DepositDialogProps) {
         abi: fakeUSDC.abi,
         chainId: chainId,
         functionName: "approve",
-        args: [getOmniPayAddress(chainId), toBigInt(debouncedAmount)],
+        args: [getMidPayAddress(chainId), toBigInt(debouncedAmount)],
         });
     };
 
@@ -100,7 +100,7 @@ export default function DepositDialog({ className }: DepositDialogProps) {
         if (!chainId) return;
         
         deposit({
-      address: getOmniPayAddress(chainId) as Address,
+      address: getMidPayAddress(chainId) as Address,
       abi: MidClient.abi,
       chainId: chainId,
       functionName: "deposit",

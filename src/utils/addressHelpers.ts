@@ -23,7 +23,7 @@ import {
     }
   }
   
-  export function getOmniPayAddress(chain: number | undefined): string {
+  export function getMidPayAddress(chain: number | undefined): string {
     switch (chain) {
       case optimismSepolia.id:
         return OptimismCore;
