@@ -65,7 +65,7 @@ export default function DepositDialog({ className }: DepositDialogProps) {
 
   // Handle approval logic
   useEffect(() => {
-    const amountBigInt = toBigInt(debouncedAmount);
+    const amountBigInt = BigInt(toBigInt(debouncedAmount).toString());
     setNeedsApproval(
       !isApproveSuccess &&
         !isAllowanceLoading &&
