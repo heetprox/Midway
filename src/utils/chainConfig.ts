@@ -22,15 +22,16 @@ export const config = createConfig({
   chains,
   connectors: [
     injected({
-      target: 'metaMask',
-      shimDisconnect: false,
-    }),
-    injected({
-      target: () => ({
-        id: 'injected',
-        name: 'Injected Wallet',
-        provider: typeof window !== 'undefined' ? window.ethereum : undefined,
-      }),
+      target: () => {
+        // Only use window.ethereum, never window.web3
+        return typeof window !== 'undefined' && window.ethereum 
+          ? {
+              id: 'injected',
+              name: 'Injected Wallet',
+              provider: window.ethereum,
+            }
+          : undefined;
+      },
       shimDisconnect: false,
     }),
   ],
@@ -40,5 +41,4 @@ export const config = createConfig({
     [modeSepolia.id]: http(),
     [zoraSepolia.id]: http(),
   },
-  ssr: true,
 });

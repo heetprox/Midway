@@ -3,7 +3,7 @@
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { WagmiProvider } from "wagmi";
 import { config } from "@/utils/chainConfig";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -20,11 +20,7 @@ const queryClient = new QueryClient({
 });
 
 export default function Web3Provider({ children }: { children: React.ReactNode }) {
-  const [isClient, setIsClient] = useState(false);
-
   useEffect(() => {
-    setIsClient(true);
-    
     // Ensure window.ethereum is available and clean up any legacy web3
     if (typeof window !== 'undefined') {
       // Remove any legacy web3 references that might interfere
@@ -33,11 +29,6 @@ export default function Web3Provider({ children }: { children: React.ReactNode }
       }
     }
   }, []);
-
-  // Prevent SSR/hydration issues
-  if (!isClient) {
-    return <>{children}</>;
-  }
 
   return (
     <QueryClientProvider client={queryClient}>
