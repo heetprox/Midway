@@ -1,0 +1,9 @@
+
+@font-face {
+    font-family: "Brown-beige";
+    src: url("/fonts/Brown-beige.otf") format("opentype");
+}
+
+.b-font {
+    font-family: "Brown-beige";
+}
