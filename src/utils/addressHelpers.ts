@@ -1,4 +1,4 @@
-import { EthUSDC, ModeUSDC, OptimismUSDC, ZoraUSDC } from "@/context/constants";
+import { EthClient, EthUSDC, ModeUSDC, OptimismCore, OptimismUSDC, ZoraUSDC, ModeClient, ZoraClient } from "@/context/constants";
 import {
     optimismSepolia,
     sepolia as ethSepolia,
@@ -25,15 +25,15 @@ import {
   
   export function getOmniPayAddress(chain: number | undefined): string {
     switch (chain) {
-      case optimismGoerli.id:
-        return contracts.OmniPayCore;
-      case baseGoerli.id:
-        return contracts.BaseOmniPayClient;
-      case zoraTestnet.id:
-        return contracts.ZoraOmniPayClient;
-      case modeTestnet.id:
-        return contracts.ModeOmniPayClient;
+      case optimismSepolia.id:
+        return OptimismCore;
+      case ethSepolia.id:
+        return EthClient;
+      case zoraSepolia.id:
+        return ZoraClient;
+      case modeSepolia.id:
+        return ModeClient;
       default:
-        return contracts.OmniPayCore;
+        return OptimismCore;
     }
   }
