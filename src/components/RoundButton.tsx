@@ -7,7 +7,7 @@ const RoundButton = ({ text1, text2, link }: { text1: string, text2: string, lin
 
     const [isHovered, setIsHovered] = useState(false);
     return (
-        <div className="aspect-square relative w-[14vw]">
+        <div className="aspect-square relative w-[12vw]">
             <div className={`absolute 
                         border-2 border-[#181917]
                         aspect-square top-0 left-0 w-full h-full bg-[#181917]/10 rounded-full translate-7`}>
@@ -23,7 +23,7 @@ const RoundButton = ({ text1, text2, link }: { text1: string, text2: string, lin
 
                 <Link href={link}
                     style={{
-                        fontSize: "clamp(1.25rem, 2.25vw, 200rem)",
+                        fontSize: "clamp(1.25rem, 2vw, 200rem)",
                         lineHeight: "clamp(1.25rem, 2.25vw, 200rem)",
                         zIndex: 20
                     }}
