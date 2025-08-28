@@ -31,25 +31,25 @@ if (!BOT_PRIVATE_KEY) {
 const CHAIN_CONFIGS: Record<ChainType, ChainConfig> = {
   optimism: {
     name: "Optimism Sepolia",
-    rpcUrl: "https://sepolia.optimism.io",
+    rpcUrl: process.env.OPTIMISM_SEPOLIA_RPC_URL!,
     chainId: 10132n,
     routerAddress: OptimismRouter,
   },
   zora: {
     name: "Zora Sepolia",
-    rpcUrl: "https://sepolia.rpc.zora.energy",
+    rpcUrl: process.env.ZORA_SEPOLIA_RPC_URL!,
     chainId: 9999n,
     routerAddress: ZoraRouter,
   },
   mode: {
     name: "Mode Sepolia",
-    rpcUrl: "https://sepolia.mode.network",
+    rpcUrl: process.env.MODE_SEPOLIA_RPC_URL!,
     chainId: 9998n,
     routerAddress: ModeRouter,
   },
   eth: {
     name: "Ethereum Sepolia",
-    rpcUrl: "https://sepolia.infura.io/v3/9aa3d95b3bc440fa88ea12eaa4456161",
+    rpcUrl: process.env.ETH_SEPOLIA_RPC_URL!,
     chainId: 11155111n,
     routerAddress: EthRouter,
   },
@@ -121,13 +121,16 @@ class CrossChainRelayer {
     console.log("\n📥 Processing queued messages...");
 
     // Process Optimism → Zora/Mode messages
-    await this.processChainMessages("optimism", ["zora", "mode"]);
+    await this.processChainMessages("optimism", ["zora", "mode", "eth"]);
     
     // Process Zora → Optimism messages
     await this.processChainMessages("zora", ["optimism"]);
     
     // Process Mode → Optimism messages
     await this.processChainMessages("mode", ["optimism"]);
+
+    // Process Eth → Optimism messages
+    await this.processChainMessages("eth", ["optimism"]);
   }
 
   private async processChainMessages(
@@ -244,6 +247,20 @@ class CrossChainRelayer {
       }
     });
 
+    // Eth events → Optimism
+    this.routers.eth.on("MessageSent", async (message: MessageData) => {
+      try {
+        console.log("🌐 Received message from Eth:", message);
+        
+        await this.routeMessage(message, "eth", "optimism");
+    
+        await this.routers.eth.pop();
+        console.log("✅ Processed Eth message");
+      } catch (error) {
+        console.error("❌ Error processing Eth event:", error);
+      }
+    });
+
     console.log("✅ Event listeners configured");
   }
 
@@ -253,7 +270,7 @@ class CrossChainRelayer {
     await this.routers.optimism.removeAllListeners();
     await this.routers.zora.removeAllListeners();
     await this.routers.mode.removeAllListeners();
-    
+    await this.routers.eth.removeAllListeners();
     console.log("✅ Event listeners removed");
   }
 
