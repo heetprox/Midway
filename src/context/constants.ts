@@ -1,15 +1,15 @@
 
-export const OptimismUSDC = "0x79460d7f39d0C2cf0BB730Ac1fb56540edDDF691";
-export const ModeUSDC = "0xF577e68a879E63FBbbD1878E0604040Da0bB103B";
-export const EthUSDC = '0x404C2576ea1B478Ef309AEAf07e63263255D3d8c';
-export const ZoraUSDC = "0x73bdb7a3c1DD24E3b109DE0856CDF4577431aB76";
+export const OptimismUSDC = "0x9eb1C7265597DC6ca3a5ae07273C6A75c2058F08";
+export const ModeUSDC = "0x1e48E4AAd4e1F5e32D743bc54e859Fa538D42a79";
+export const EthUSDC = '0x5E973520943EAc2Fcc4329dD60De3CD3AD8821b7';
+export const ZoraUSDC = "0x3a7448558d6f7E766c79B77b8f59d901e507F5A6";
 
-export const OptimismCore = "0x687fd495E18aBF1DD4aF09a6864d08a21661DC7D";
-export const EthClient = "0xBEb286Bd923f6172B1BEcb6bB645D29c1eC9Dc53";
-export const ZoraClient = "0xFD8A5e2D68A9fB6a9F9e1a727E5C51ba020c837b";
-export const ModeClient = "0x84aa00705dC27C1775FF8fD96fE66A83129F83e2";
+export const OptimismCore = "0x895cCb29435243F91f63742b489F76b5D8f1a968";
+export const EthClient = "0x9E86ca00DDbcbF09571C89952faE0b02E3E265d9";
+export const ZoraClient = "0xfd0A253c63aE25f38846CfF2FE0e521182636b32";
+export const ModeClient = "0x9eb1C7265597DC6ca3a5ae07273C6A75c2058F08";
 
-export const OptimismRouter = "0x7AeC83cEC21521Fc883D5C02816cBB09c52919a7";
+export const OptimismRouter = "0x36a20A8b577dE1Cf06d66193dcA99c0BF3Dec1b6";
 export const EthRouter = "0x02b09Ba3D40a9D2c4fbc4D7e16064A1EAd1218dB";
-export const ZoraRouter = "0x380c70FcaC3ec4D0E421bC2293E928a1670dfB5d";
-export const ModeRouter = "0xde5c528cdE063370f1c662562771929F52479aE8";
+export const ZoraRouter = "0x6c99AC35d4cCc171eF2008b93Bd5432D884E0267";
+export const ModeRouter = "0x6f11303c1CFEB708a3469e8Fc2353452E83031e5";
