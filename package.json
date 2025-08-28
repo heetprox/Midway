@@ -5,6 +5,13 @@
   "devDependencies": {
     "@types/bun": "latest"
   },
+  "scripts": {
+    "dev": "bun --watch server.ts",
+    "start": "bun server.ts",
+    "build": "bun build server.ts --target bun --outdir ./dist",
+    "lint": "bunx eslint . --ext .ts",
+    "type-check": "bunx tsc --noEmit"
+  },
   "peerDependencies": {
     "typescript": "^5.0.0"
   },
