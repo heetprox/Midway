@@ -44,7 +44,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="w-full min-h-screen h-[120vh] bg-[#FEFBEC] relative"
+    <div className="w-full min-h-screen h-[135vh] bg-[#FEFBEC] relative"
     >
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
@@ -53,9 +53,9 @@ const Dashboard = () => {
         <div className="absolute bottom-20 left-1/3 w-40 h-40 rounded-full bg-[#181917] blur-3xl"></div>
       </div>
 
-      <div className="relative w-full items-center flex flex-col gap-6 h-full z-10" style={{ padding: "clamp(1.25rem, 2vw, 2rem)" }}>
+      <div className="relative w-full items-center flex flex-col gap-6 h-full z-10" style={{ padding: "clamp(1rem, 2vw, 2rem)" }}>
         {/* Header */}
-        <div className="flex justify-between h-fit w-[40%] items-center ">
+        <div className="flex justify-between h-fit w-[95%] md:w-[60%] lg:w-[50%] xl:w-[45%] 2xl:w-[40%] items-center ">
           <div className="group">
             <div
               className="b-font leading-none text-[#181917] transition-all duration-500 group-hover:text-[#181917]/80"
@@ -70,12 +70,11 @@ const Dashboard = () => {
 
 
         {/* Main Content Grid */}
-        <div className="flex flex-col w-[40%]  h-[90vh] gap-6 mx-auto">
+        <div className="flex flex-col w-[95%] md:w-[60%] lg:w-[50%] xl:w-[45%] 2xl:w-[40%]  h-[90vh] gap-6 mx-auto">
           {/* Left Column */}
           <div className="w-full h-full  flex flex-col gap-6">
-            {/* Balance Display */}
 
-            <div className="flex w-full h-fit justify-between">
+            <div className="flex w-full h-fit gap-4 justify-start">
               <div className="w-fit h-full">
                 <ChainSelector />
 

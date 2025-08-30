@@ -90,7 +90,7 @@ export default function BalanceDialog() {
             boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
           }}
         >
-          [address] : {address}
+          [address] : {address?.slice(0, 6) + "..." + address?.slice(-4)}
         </div>
 
       </div>
