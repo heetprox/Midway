@@ -68,10 +68,10 @@ export default function DepositDialog({ className }: DepositDialogProps) {
     const amountBigInt = BigInt(toBigInt(debouncedAmount).toString());
     setNeedsApproval(
       !isApproveSuccess &&
-        !isAllowanceLoading &&
-        debouncedAmount !== 0 &&
-        allowance !== undefined &&
-        (allowance as bigint) < amountBigInt
+      !isAllowanceLoading &&
+      debouncedAmount !== 0 &&
+      allowance !== undefined &&
+      (allowance as bigint) < amountBigInt
     );
   }, [allowance, debouncedAmount, isAllowanceLoading, isApproveSuccess]);
 
@@ -86,20 +86,20 @@ export default function DepositDialog({ className }: DepositDialogProps) {
 
   const handleApprove = () => {
     if (!chainId) return;
-    
-        approve({
-        address: getUsdcAddress(chainId) as Address,
-        abi: fakeUSDC.abi,
-        chainId: chainId,
-        functionName: "approve",
-        args: [getMidPayAddress(chainId), toBigInt(debouncedAmount)],
-        });
-    };
 
-    const handleDeposit = () => {
-        if (!chainId) return;
-        
-        deposit({
+    approve({
+      address: getUsdcAddress(chainId) as Address,
+      abi: fakeUSDC.abi,
+      chainId: chainId,
+      functionName: "approve",
+      args: [getMidPayAddress(chainId), toBigInt(debouncedAmount)],
+    });
+  };
+
+  const handleDeposit = () => {
+    if (!chainId) return;
+
+    deposit({
       address: getMidPayAddress(chainId) as Address,
       abi: MidClient.abi,
       chainId: chainId,
@@ -115,15 +115,11 @@ export default function DepositDialog({ className }: DepositDialogProps) {
 
   return (
     <div className={`border-4 border-black shadow-xl w-full ${className}`}
-    style={{
-      padding: "clamp(1rem, 1vw, 200rem)",
-      boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
-    }}
+      style={{
+        padding: "clamp(1rem, 1vw, 200rem)",
+        boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
+      }}
     >
-      <div className="mb-6">
-        <h2 className="b-font text-xl mb-4">Select a chain</h2>
-        <ChainSelector />
-      </div>
       <div className="border-t border-[#181917]/20 my-6" />
       <div className="mb-6">
         <h2 className="b-font text-xl mb-4">Amount</h2>

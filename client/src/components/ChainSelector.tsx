@@ -10,17 +10,17 @@ import {
 
 interface ChainSelectorProps {
   className?: string;
-} 
+}
 
 const ChainSelector = ({ className }: ChainSelectorProps) => {
   const chainId = useChainId();
   const { switchChain, chains } = useSwitchChain();
 
   const chainList = [
-    { name: "🔴 Optimism Sepolia", id: optimismSepolia.id, key: "Optimism" },
-    { name: "🔵 Ethereum Sepolia", id: ethSepolia.id, key: "Ethereum" },
-    { name: "🌐 Mode Sepolia", id: modeSepolia.id, key: "Mode" },
-    { name: "🪩 Zora Sepolia", id: zoraSepolia.id, key: "Zora" },
+    { name: "Optimism Sepolia", id: optimismSepolia.id, key: "Optimism" },
+    { name: "Ethereum Sepolia", id: ethSepolia.id, key: "Ethereum" },
+    { name: "Mode Sepolia", id: modeSepolia.id, key: "Mode" },
+    { name: "Zora Sepolia", id: zoraSepolia.id, key: "Zora" },
   ] as const;
 
   function switchToChain(chainKey: "Optimism" | "Ethereum" | "Mode" | "Zora") {
@@ -51,23 +51,39 @@ const ChainSelector = ({ className }: ChainSelectorProps) => {
   const currentChain = chainList.find((c) => c.id === chainId);
 
   return (
-    <select
-      onChange={(e) => {
-        const selectedChain = chainList.find((c) => c.name === e.target.value);
-        if (selectedChain) {
-          const chainKey = selectedChain.key as "Optimism" | "Ethereum" | "Mode" | "Zora";
-          switchToChain(chainKey);
-        }
-      }}
-      value={currentChain?.name || ""}
-      className={`border border-[#181917]/30 rounded-lg px-4 py-2 text-lg b-font bg-white focus:outline-none focus:border-[#181917] ${className}`}
+    <div className="border-4 border-[#181917] w-fit rounded-full"
+    style={{
+      padding: "clamp(1rem, 1vw, 200rem)",
+      boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
+    }}
     >
-      {chainList.map((c) => (
-        <option key={c.id} value={c.name}>
-          {c.name}
-        </option>
-      ))}
-    </select>
+    <div className="flex  text-lg gap-2 "
+     
+    >
+      <div className="s-font leading-none  text-black ">{"[network]  :  "}</div>
+      <select
+        onChange={(e) => {
+          const selectedChain = chainList.find((c) => c.name === e.target.value);
+          if (selectedChain) {
+            const chainKey = selectedChain.key as "Optimism" | "Ethereum" | "Mode" | "Zora";
+            switchToChain(chainKey);
+          }
+        }}
+        value={currentChain?.name || ""}
+        className={` px-4 py-2  s-font leading-none text-black  focus:outline-none  ${className}`}
+
+      >
+        {chainList.map((c) => (
+          <option
+            className="bg-black leading-none text-amber-50"
+            key={c.id} value={c.name}>
+            {c.name}
+          </option>
+        ))}
+      </select>
+    </div>
+    <div className="text-black text-lg s-font leading-none">{"[Testnet only]  "}</div>
+    </div>
   );
 };
 

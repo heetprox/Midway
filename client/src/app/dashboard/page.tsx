@@ -6,6 +6,7 @@ import BalanceDialog from "@/components/BalanceDialog";
 import DepositDialog from "@/components/DepositDialog";
 import WithdrawDialog from "@/components/WithdrawDialog";
 import USDCMintDialog from "@/components/USDCMintDialog";
+import ChainSelector from '@/components/ChainSelector';
 
 const Dashboard = () => {
   const { address, isConnected } = useAccount();
@@ -96,6 +97,12 @@ const Dashboard = () => {
           {/* Right Column */}
           <div className="w-[60%] flex flex-col gap-4">
             {/* Deposit Dialog */}
+
+            <div className="flex w-full justify-center">
+              <div className="w-full">
+                <ChainSelector />
+              </div>
+            </div>
             <div className="flex w-full justify-center">
               <div className="w-full">
                 <DepositDialog />
