@@ -10,7 +10,7 @@ import {
 
 interface ChainSelectorProps {
   className?: string;
-}
+} 
 
 const ChainSelector = ({ className }: ChainSelectorProps) => {
   const chainId = useChainId();

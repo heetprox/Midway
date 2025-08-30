@@ -1,22 +1,46 @@
 import { EthClient, EthUSDC, ModeUSDC, OptimismCore, OptimismUSDC, ZoraUSDC, ModeClient, ZoraClient } from "@/context/constants";
+import {
+  optimismSepolia,
+  sepolia as ethSepolia,
+  modeTestnet as modeSepolia,
+  zoraSepolia,
+} from "wagmi/chains";
 
-// LayerZero chain IDs that match your backend configuration
-const LAYER_ZERO_CHAIN_IDS = {
-  OPTIMISM_SEPOLIA: 420,
-  ETH_SEPOLIA: 111,
-  ZORA_SEPOLIA: 9999,
-  MODE_SEPOLIA: 9998,
+// Mapping between real blockchain chain IDs and LayerZero chain IDs
+const REAL_TO_LAYERZERO_CHAIN_ID = {
+  [optimismSepolia.id]: 420,     // 11155420 → 420
+  [ethSepolia.id]: 111,          // 11155111 → 111
+  [zoraSepolia.id]: 9999,        // 999999999 → 9999
+  [modeSepolia.id]: 9998,        // 919 → 9998
 } as const;
 
+const LAYERZERO_TO_REAL_CHAIN_ID = {
+  420: optimismSepolia.id,       // 420 → 11155420
+  111: ethSepolia.id,            // 111 → 11155111
+  9999: zoraSepolia.id,          // 9999 → 999999999
+  9998: modeSepolia.id,          // 9998 → 919
+} as const;
+
+// Helper functions for chain ID conversion
+export function realChainIdToLayerZero(realChainId: number): number | undefined {
+  return REAL_TO_LAYERZERO_CHAIN_ID[realChainId as keyof typeof REAL_TO_LAYERZERO_CHAIN_ID];
+}
+
+export function layerZeroChainIdToReal(layerZeroChainId: number): number | undefined {
+  return LAYERZERO_TO_REAL_CHAIN_ID[layerZeroChainId as keyof typeof LAYERZERO_TO_REAL_CHAIN_ID];
+}
+
 export function getUsdcAddress(chain: number | undefined): string {
+  if (!chain) return OptimismUSDC;
+  
   switch (chain) {
-    case LAYER_ZERO_CHAIN_IDS.OPTIMISM_SEPOLIA:
+    case optimismSepolia.id:
       return OptimismUSDC;
-    case LAYER_ZERO_CHAIN_IDS.ETH_SEPOLIA:
+    case ethSepolia.id:
       return EthUSDC;
-    case LAYER_ZERO_CHAIN_IDS.ZORA_SEPOLIA:
+    case zoraSepolia.id:
       return ZoraUSDC;
-    case LAYER_ZERO_CHAIN_IDS.MODE_SEPOLIA:
+    case modeSepolia.id:
       return ModeUSDC;
     default:
       return OptimismUSDC;
@@ -24,14 +48,16 @@ export function getUsdcAddress(chain: number | undefined): string {
 }
 
 export function getMidPayAddress(chain: number | undefined): string {
+  if (!chain) return OptimismCore;
+  
   switch (chain) {
-    case LAYER_ZERO_CHAIN_IDS.OPTIMISM_SEPOLIA:
+    case optimismSepolia.id:
       return OptimismCore;
-    case LAYER_ZERO_CHAIN_IDS.ETH_SEPOLIA:
+    case ethSepolia.id:
       return EthClient;
-    case LAYER_ZERO_CHAIN_IDS.ZORA_SEPOLIA:
+    case zoraSepolia.id:
       return ZoraClient;
-    case LAYER_ZERO_CHAIN_IDS.MODE_SEPOLIA:
+    case modeSepolia.id:
       return ModeClient;
     default:
       return OptimismCore;
