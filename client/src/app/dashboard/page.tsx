@@ -70,26 +70,22 @@ const Dashboard = () => {
 
 
         {/* Main Content Grid */}
-        <div className="flex flex-col w-[95%] md:w-[60%] lg:w-[50%] xl:w-[45%] 2xl:w-[40%]  h-full gap-6 mx-auto">
+        <div className="flex flex-col w-[95%] md:w-[60%] lg:w-[50%] xl:w-[45%] 2xl:w-[40%] h-full gap-4 sm:gap-6 mx-auto">
           {/* Left Column */}
-          <div className="w-full h-full  flex flex-col gap-6">
-
-            <div className="flex w-full h-fit gap-4 justify-start">
+          <div className="w-full h-full flex flex-col gap-4 sm:gap-6">
+            <div className="flex flex-col sm:flex-row w-full h-fit gap-2 sm:gap-4 justify-start">
               <div className="w-fit h-full">
                 <ChainSelector />
-
               </div>
               <button
                 onClick={handleDisconnect}
-                className="relative text-black cursor-pointer rounded-full border-2  px-8 py-4 hover:bg-[#181917]/5 transition-all duration-300 s-font  overflow-hidden"
-
+                className="relative text-black cursor-pointer rounded-full border-2 hover:bg-[#181917]/5 transition-all duration-300 s-font overflow-hidden w-full sm:w-auto"
                 style={{
-                  fontSize: "clamp(1rem, 1vw, 100rem)",
-                  padding: "clamp(1rem, 1vw, 200rem)",
-                  boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)"
+                  fontSize: "clamp(0.875rem, 2vw, 1rem)",
+                  padding: "clamp(0.75rem, 1vw, 1rem)",
+                  boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)"
                 }}
               >
-                
                 <span className="relative z-10">Disconnect Wallet</span>
               </button>
             </div>
@@ -108,7 +104,7 @@ const Dashboard = () => {
           </div>
 
           {/* Right Column */}
-          <div className="w-full flex flex-col gap-6">
+          <div className="w-full flex flex-col gap-4 sm:gap-6">
             {/* Deposit Dialog */}
 
 

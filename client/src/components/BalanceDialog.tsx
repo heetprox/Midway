@@ -70,65 +70,77 @@ export default function BalanceDialog() {
   const chainName = currentChain?.name || 'Unknown Chain';
 
   return (
-    <div className="w-full flex flex-col gap-6 s-font h-full  rounded-2xl"
-      style={{
-        // padding: "clamp(1.25rem, 1vw, 200rem)"
-      }}
-    >
-      <div className="flex gap-4">
-        <div className="text-black w-fit text-xl leading-none border-2 border-black rounded-full"
+    <div className="w-full flex flex-col gap-4 sm:gap-6 s-font h-full rounded-2xl">
+      <div className="flex  sm:flex-row gap-2 sm:gap-4">
+        <div className="text-black w-fit leading-none border-2 border-black rounded-full"
           style={{
-            padding: "clamp(1rem, 1vw, 200rem)",
-            boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
+            padding: "clamp(0.5rem, 1vw, 1rem)",
+            boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)",
+            fontSize: "clamp(1rem, 2.5vw, 1.25rem)"
           }}
         >
           Your Wallet
         </div>
-        <div className="text-black w-fit text-xl leading-none border-2 border-black rounded-full"
+        <div className="text-black w-fit leading-none border-2 border-black rounded-full"
           style={{
-            padding: "clamp(1rem, 1vw, 200rem)",
-            boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
+            padding: "clamp(0.5rem, 1vw, 1rem)",
+            boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)",
+            fontSize: "clamp(1rem, 2vw, 1.25rem)"
           }}
         >
           [address] : {address?.slice(0, 6) + "..." + address?.slice(-4)}
         </div>
-
       </div>
 
 
       <div className="flex gap-2 border-4 border-black flex-col w-full"
         style={{
-          padding: "clamp(1rem, 1vw, 200rem)",
-          boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
+          padding: "clamp(0.75rem, 1vw, 1.5rem)",
+          boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)"
         }}
       >
-        <div className="b-font text-3xl">CORE BALANCE</div>
+        <div className="b-font" style={{ fontSize: "clamp(1.5rem, 4vw, 3rem)" }}>
+          CORE BALANCE
+        </div>
 
         {isMidPayCoreBalanceLoading ? (
-          <div className="b-font text-3xl ">🡢 Loading...</div>
-        )
-          :
-          coreBalanceError ? (
-            <div className="s-font text-3xl ">🡢 Error</div>
-          )
-            :
-            (
-              <div className="s-font text-3xl ">🡢 {toFixed(MidPayCoreBalance as bigint)} USDC</div>
-            )
-        }
-
+          <div className="b-font" style={{ fontSize: "clamp(1.25rem, 3.5vw, 3rem)" }}>
+            🡢 Loading...
+          </div>
+        ) : coreBalanceError ? (
+          <div className="s-font" style={{ fontSize: "clamp(1.25rem, 3.5vw, 3rem)" }}>
+            🡢 Error
+          </div>
+        ) : (
+          <div className="s-font" style={{ fontSize: "clamp(1.25rem, 3.5vw, 3rem)" }}>
+            🡢 {toFixed(MidPayCoreBalance as bigint)} USDC
+          </div>
+        )}
       </div>
 
       <div className="flex gap-2 border-4 border-black flex-col w-full"
         style={{
-          padding: "clamp(1rem, 1vw, 200rem)",
-          boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
+          padding: "clamp(0.75rem, 1vw, 1.5rem)",
+          boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)"
         }}
       >
-        <div className="b-font text-3xl">MINTED USDC</div>
+        <div className="b-font" style={{ fontSize: "clamp(1.5rem, 4vw, 3rem)" }}>
+          MINTED USDC
+        </div>
 
-        {isWalletBalanceLoading ? (<div className="s-font text-3xl ">🡢 Loading...</div>) : walletBalanceError ? (<div className="s-font text-3xl ">🡢 Error</div>) : (<div className="s-font text-3xl ">🡢 {toFixed(walletBalance as bigint)} USDC</div>)}
-
+        {isWalletBalanceLoading ? (
+          <div className="s-font" style={{ fontSize: "clamp(1.25rem, 3.5vw, 3rem)" }}>
+            🡢 Loading...
+          </div>
+        ) : walletBalanceError ? (
+          <div className="s-font" style={{ fontSize: "clamp(1.25rem, 3.5vw, 3rem)" }}>
+            🡢 Error
+          </div>
+        ) : (
+          <div className="s-font" style={{ fontSize: "clamp(1.25rem, 3.5vw, 3rem)" }}>
+            🡢 {toFixed(walletBalance as bigint)} USDC
+          </div>
+        )}
       </div>
 
 
