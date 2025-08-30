@@ -120,10 +120,7 @@ export default function DepositDialog({ className }: DepositDialogProps) {
         boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
       }}
     >
-      <div className="flex flex-col gap-2">
-      <h2 className="b-font text-3xl mb-4">Select a chain</h2>
-        <ChainSelector />
-        </div>
+      
         
       <div className="flex flex-col gap-2">
         <h2 className="b-font text-3xl mb-4">Deposit Amount</h2>

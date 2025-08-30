@@ -44,7 +44,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="w-full min-h-screen h-[100vh] bg-[#FEFBEC] relative overflow-hidden">
+    <div className="w-full min-h-screen h-[100vh] bg-[#FEFBEC] relative">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-10 left-10 w-32 h-32 rounded-full bg-[#181917] blur-3xl"></div>
@@ -52,23 +52,23 @@ const Dashboard = () => {
         <div className="absolute bottom-20 left-1/3 w-40 h-40 rounded-full bg-[#181917] blur-3xl"></div>
       </div>
 
-      <div className="relative w-full flex flex-col gap-0 h-full z-10" style={{ padding: "clamp(1.25rem, 2vw, 2rem)" }}>
+      <div className="relative w-full items-center flex flex-col gap-4 h-full z-10" style={{ padding: "clamp(1.25rem, 2vw, 2rem)" }}>
         {/* Header */}
-        <div className="flex justify-between h-fit items-center ">
+        <div className="flex justify-between h-fit w-[40%] items-center ">
           <div className="group">
             <div
               className="b-font leading-none text-[#181917] transition-all duration-500 group-hover:text-[#181917]/80"
               style={{ fontSize: "clamp(2rem, 8vw, 4rem)" }}
             >
-              Midway Dashboard
+              Midway 
             </div>
           </div>
 
           <button
             onClick={handleDisconnect}
-            className="relative bg-[#181917] text-[#FEFBEC] px-8 py-4 rounded-full hover:bg-[#181917]/90 transition-all duration-300 b-font shadow-lg hover:shadow-xl transform hover:scale-105 group overflow-hidden"
+            className="relative text-[#181917] border-4 px-8 py-4 hover:bg-[#181917]/90 transition-all duration-300 b-font shadow-lg hover:shadow-xl transform hover:scale-105 group overflow-hidden"
             
-            style={{ fontSize: "clamp(0.875rem, 1.5vw, 1rem)",
+            style={{ fontSize: "clamp(0.875rem, 1.75vw, 1rem)",
               padding: "clamp(1rem, 1vw, 200rem)",
             boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)"
              }}
@@ -80,10 +80,12 @@ const Dashboard = () => {
 
 
         {/* Main Content Grid */}
-        <div className="flex w-full  h-[90vh] gap-6 mx-auto">
+        <div className="flex flex-col w-[40%]  h-[90vh] gap-6 mx-auto">
           {/* Left Column */}
-          <div className="w-[40%] h-full  flex flex-col gap-4">
+          <div className="w-full h-full  flex flex-col gap-4">
             {/* Balance Display */}
+
+        
             <div className="flex w-full h-fit justify-center">
               <div className="w-full h-full">
                 <BalanceDialog />
@@ -99,14 +101,14 @@ const Dashboard = () => {
           </div>
 
           {/* Right Column */}
-          <div className="w-[60%] flex flex-col gap-4">
+          <div className="w-full flex flex-col gap-4">
             {/* Deposit Dialog */}
-
-            <div className="flex w-full justify-center">
-              <div className="w-full">
+            <div className="flex w-full h-fit justify-center">
+              <div className="w-full h-full">
                 <ChainSelector />
               </div>
             </div>
+      
             <div className="flex w-full justify-center">
               <div className="w-full">
                 <DepositDialog />
