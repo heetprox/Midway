@@ -43,7 +43,7 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="w-full min-h-screen bg-[#FEFBEC] relative overflow-hidden">
+    <div className="w-full min-h-screen h-[100vh] bg-[#FEFBEC] relative overflow-hidden">
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-10 left-10 w-32 h-32 rounded-full bg-[#181917] blur-3xl"></div>
@@ -51,19 +51,18 @@ const Dashboard = () => {
         <div className="absolute bottom-20 left-1/3 w-40 h-40 rounded-full bg-[#181917] blur-3xl"></div>
       </div>
 
-      <div className="relative w-full z-10" style={{ padding: "clamp(1.25rem, 2vw, 2rem)" }}>
+      <div className="relative w-full h-full z-10" style={{ padding: "clamp(1.25rem, 2vw, 2rem)" }}>
         {/* Header */}
-        <div className="flex justify-between items-center mb-12">
+        <div className="flex justify-between h-fit items-center ">
           <div className="group">
-            <div 
+            <div
               className="b-font leading-none text-[#181917] transition-all duration-500 group-hover:text-[#181917]/80"
               style={{ fontSize: "clamp(2rem, 8vw, 4rem)" }}
             >
               Midway Dashboard
             </div>
-            <div className="h-1 w-0 group-hover:w-full bg-gradient-to-r from-[#181917] to-[#181917]/60 transition-all duration-500 rounded-full mt-2"></div>
           </div>
-          
+
           <button
             onClick={handleDisconnect}
             className="relative bg-[#181917] text-[#FEFBEC] px-8 py-4 rounded-full hover:bg-[#181917]/90 transition-all duration-300 b-font shadow-lg hover:shadow-xl transform hover:scale-105 group overflow-hidden"
@@ -88,19 +87,19 @@ const Dashboard = () => {
         </div>
 
         {/* Main Content Grid */}
-        <div className="flex w-full gap-6 mx-auto">
+        <div className="flex w-full  h-[80vh] gap-6 mx-auto">
           {/* Left Column */}
-          <div className="w-[30%] space-y-12">
+          <div className="w-[30%] h-full  space-y-12">
             {/* Balance Display */}
-            <div className="flex w-full justify-center">
-              <div className="w-full">
+            <div className="flex w-full h-1/2 justify-center">
+              <div className="w-full h-full">
                 <BalanceDialog />
               </div>
             </div>
 
             {/* USDC Mint Dialog */}
-            <div className="flex justify-center">
-              <div className="w-full">
+            <div className="flex justify-center h-1/2">
+              <div className="w-full h-full">
                 <USDCMintDialog />
               </div>
             </div>
@@ -124,7 +123,7 @@ const Dashboard = () => {
           </div>
         </div>
 
-        
+
       </div>
     </div>
   );

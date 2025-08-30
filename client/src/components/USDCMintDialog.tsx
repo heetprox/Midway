@@ -78,7 +78,7 @@ export default function USDCMintDialog({ className }: USDCMintDialogProps) {
   }
 
   return (
-    <div className={`bg-white rounded-lg  p-6 w-full ${className}`}>
+    <div className={`bg-white rounded-lg h-full  p-6 w-full ${className}`}>
       <div>
         <h2 className="b-font text-xl text-[#181917] mb-4">Need USDC?</h2>
         <p className="text-sm text-gray-600 mb-6 s-font">
