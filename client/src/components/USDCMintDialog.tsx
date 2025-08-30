@@ -84,7 +84,7 @@ export default function USDCMintDialog({ className }: USDCMintDialogProps) {
       boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
     }}
     >
-      <div className="flex flex-col gap-4">
+      <div className="flex flex-col gap-6">
         <div className="flex flex-col">
         <h2 className="b-font text-3xl text-[#181917] mb-4">Need USDC?</h2>
         <p className="text-lg text-gray-600 mb-6 s-font">

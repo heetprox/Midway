@@ -70,7 +70,7 @@ export default function BalanceDialog() {
   const chainName = currentChain?.name || 'Unknown Chain';
 
   return (
-    <div className="w-full flex flex-col gap-4 s-font h-full  rounded-2xl"
+    <div className="w-full flex flex-col gap-6 s-font h-full  rounded-2xl"
       style={{
         // padding: "clamp(1.25rem, 1vw, 200rem)"
       }}
@@ -82,7 +82,7 @@ export default function BalanceDialog() {
             boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
           }}
         >
-          Zora Testnet
+          Your Wallet
         </div>
         <div className="text-black w-fit text-xl leading-none border-2 border-black rounded-full"
           style={{

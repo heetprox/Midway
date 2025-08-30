@@ -44,7 +44,8 @@ const Dashboard = () => {
   }
 
   return (
-    <div className="w-full min-h-screen h-[100vh] bg-[#FEFBEC] relative">
+    <div className="w-full min-h-screen h-[120vh] bg-[#FEFBEC] relative"
+    >
       {/* Background Pattern */}
       <div className="absolute inset-0 opacity-5">
         <div className="absolute top-10 left-10 w-32 h-32 rounded-full bg-[#181917] blur-3xl"></div>
@@ -52,7 +53,7 @@ const Dashboard = () => {
         <div className="absolute bottom-20 left-1/3 w-40 h-40 rounded-full bg-[#181917] blur-3xl"></div>
       </div>
 
-      <div className="relative w-full items-center flex flex-col gap-4 h-full z-10" style={{ padding: "clamp(1.25rem, 2vw, 2rem)" }}>
+      <div className="relative w-full items-center flex flex-col gap-6 h-full z-10" style={{ padding: "clamp(1.25rem, 2vw, 2rem)" }}>
         {/* Header */}
         <div className="flex justify-between h-fit w-[40%] items-center ">
           <div className="group">
@@ -60,32 +61,39 @@ const Dashboard = () => {
               className="b-font leading-none text-[#181917] transition-all duration-500 group-hover:text-[#181917]/80"
               style={{ fontSize: "clamp(2rem, 8vw, 4rem)" }}
             >
-              Midway 
+              Midway
             </div>
           </div>
 
-          <button
-            onClick={handleDisconnect}
-            className="relative text-[#181917] border-4 px-8 py-4 hover:bg-[#181917]/90 transition-all duration-300 b-font shadow-lg hover:shadow-xl transform hover:scale-105 group overflow-hidden"
-            
-            style={{ fontSize: "clamp(0.875rem, 1.75vw, 1rem)",
-              padding: "clamp(1rem, 1vw, 200rem)",
-            boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)"
-             }}
-          >
-            <div className="absolute inset-0 bg-gradient-to-r from-[#181917]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
-            <span className="relative z-10">Disconnect Wallet</span>
-          </button>
+
         </div>
 
 
         {/* Main Content Grid */}
         <div className="flex flex-col w-[40%]  h-[90vh] gap-6 mx-auto">
           {/* Left Column */}
-          <div className="w-full h-full  flex flex-col gap-4">
+          <div className="w-full h-full  flex flex-col gap-6">
             {/* Balance Display */}
 
-        
+            <div className="flex w-full h-fit justify-between">
+              <div className="w-fit h-full">
+                <ChainSelector />
+
+              </div>
+              <button
+                onClick={handleDisconnect}
+                className="relative text-black cursor-pointer rounded-full border-2  px-8 py-4 hover:bg-[#181917]/5 transition-all duration-300 s-font  overflow-hidden"
+
+                style={{
+                  fontSize: "clamp(1rem, 1vw, 100rem)",
+                  padding: "clamp(1rem, 1vw, 200rem)",
+                  boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)"
+                }}
+              >
+                
+                <span className="relative z-10">Disconnect Wallet</span>
+              </button>
+            </div>
             <div className="flex w-full h-fit justify-center">
               <div className="w-full h-full">
                 <BalanceDialog />
@@ -101,14 +109,10 @@ const Dashboard = () => {
           </div>
 
           {/* Right Column */}
-          <div className="w-full flex flex-col gap-4">
+          <div className="w-full flex flex-col gap-6">
             {/* Deposit Dialog */}
-            <div className="flex w-full h-fit justify-center">
-              <div className="w-full h-full">
-                <ChainSelector />
-              </div>
-            </div>
-      
+
+
             <div className="flex w-full justify-center">
               <div className="w-full">
                 <DepositDialog />

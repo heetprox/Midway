@@ -70,7 +70,7 @@ const ChainSelector = ({ className }: ChainSelectorProps) => {
           }
         }}
         value={currentChain?.name || ""}
-        className={` px-4 py-2  s-font leading-none text-black  focus:outline-none  ${className}`}
+        className={` px-4 py-2  s-font cursor-pointer leading-none text-black  focus:outline-none  ${className}`}
 
       >
         {chainList.map((c) => (

@@ -121,10 +121,7 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
       }}
     >
       <div className="flex flex-col gap-2">
-        <h2 className="b-font text-3xl mb-4">Select a chain</h2>
-        <ChainSelector />
-        
-        <div className="" />
+      
         
         <h2 className="b-font text-3xl mb-4">Withdraw Amount</h2>
         
@@ -138,7 +135,7 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
           }
         </div>
         
-        <div className="flex gap-4">
+        <div className="flex gap-6">
           <div className="flex border-4 border-black flex-row gap-1"
             style={{
               padding: "clamp(1rem, 1vw, 200rem)",

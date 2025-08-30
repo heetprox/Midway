@@ -114,7 +114,7 @@ export default function DepositDialog({ className }: DepositDialogProps) {
   };
 
   return (
-    <div className={`border-4 flex flex-col gap-4 border-black shadow-xl w-full ${className}`}
+    <div className={`border-4 flex flex-col gap-6 border-black shadow-xl w-full ${className}`}
       style={{
         padding: "clamp(1rem, 1vw, 200rem)",
         boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
@@ -124,7 +124,7 @@ export default function DepositDialog({ className }: DepositDialogProps) {
         
       <div className="flex flex-col gap-2">
         <h2 className="b-font text-3xl mb-4">Deposit Amount</h2>
-        <div className="flex gap-4">
+        <div className="flex gap-6">
         <div className="flex border-4 border-black flex-row gap-1"
             style={{
               padding: "clamp(1rem, 1vw, 200rem)",
