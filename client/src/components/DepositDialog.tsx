@@ -120,23 +120,36 @@ export default function DepositDialog({ className }: DepositDialogProps) {
         boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
       }}
     >
-      <div className="border-t border-[#181917]/20 my-6" />
-      <div className="mb-6">
-        <h2 className="b-font text-xl mb-4">Amount</h2>
-        <div className="flex flex-row gap-1">
+      <div className="" />
+      <div className="flex flex-col gap-2">
+        <h2 className="b-font text-3xl mb-4">Deposit Amount</h2>
+        <div className="flex gap-4">
+        <div className="flex border-4 border-black flex-row gap-1"
+            style={{
+              padding: "clamp(1rem, 1vw, 200rem)",
+              boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
+                  }}
+        >
           <input
-            className="text-right outline-none border-none bg-inherit text-3xl font-bold inline-flex items-center w-32"
+            className="text-left outline-none bg-inherit text-3xl font-bold  s-font rounded-full leading-none inline-flex items-center w-42"
             placeholder="0.00"
             inputMode="numeric"
             onChange={handleAmountChange}
             type="number"
             step="0.01"
+        
             min="0"
           />
-          <span className="inline-flex items-center">USDC</span>
+          <span className="inline-flex s-font text-xl leading-none items-center">USDC</span>
+          </div>
+
           {needsApproval && (
             <button
-              className="bg-[#181917] text-[#FEFBEC] px-6 py-3 rounded-full hover:bg-[#181917]/80 transition-all duration-300 b-font ml-8 disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              padding: "clamp(1rem, 1vw, 200rem)",
+              boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)"
+            }}
+             className="text-[#181917] bg-transparent border-4  rounded-full px-6 py-3  hover:bg-[#181917]/5 cursor-pointer transition-all duration-300 b-font ml-8 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isApproveLoading || !address}
               onClick={handleApprove}
             >
@@ -145,7 +158,11 @@ export default function DepositDialog({ className }: DepositDialogProps) {
           )}
           {!needsApproval && (
             <button
-              className="bg-[#181917] text-[#FEFBEC] px-6 py-3 rounded-full hover:bg-[#181917]/80 transition-all duration-300 b-font ml-8 disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              padding: "clamp(1rem, 1vw, 200rem)",
+              boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" 
+            }}
+              className="text-[#181917] bg-transparent border-4  rounded-full px-6 py-3  hover:bg-[#181917]/5 cursor-pointer transition-all duration-300 b-font ml-8 disabled:opacity-50 disabled:cursor-not-allowed"
               disabled={isAllowanceLoading || !address || isDepositLoading}
               onClick={handleDeposit}
             >
