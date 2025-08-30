@@ -70,7 +70,7 @@ const Dashboard = () => {
 
 
         {/* Main Content Grid */}
-        <div className="flex flex-col w-[95%] md:w-[60%] lg:w-[50%] xl:w-[45%] 2xl:w-[40%]  h-[90vh] gap-6 mx-auto">
+        <div className="flex flex-col w-[95%] md:w-[60%] lg:w-[50%] xl:w-[45%] 2xl:w-[40%]  h-full gap-6 mx-auto">
           {/* Left Column */}
           <div className="w-full h-full  flex flex-col gap-6">
 

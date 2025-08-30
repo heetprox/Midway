@@ -120,13 +120,11 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
         boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
       }}
     >
-      <div className="flex flex-col gap-2">
-      
-        
-        <h2 className="b-font text-3xl mb-4">Withdraw Amount</h2>
+            <div className="flex flex-col gap-2">
+        <h2 className="b-font mb-4" style={{ fontSize: "clamp(1.5rem, 4vw, 3rem)" }}>Withdraw Amount</h2>
         
         {/* Balance display */}
-        <div className="text-sm text-gray-600 mb-2 s-font">
+        <div className="text-gray-600 mb-2 s-font" style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)" }}>
           Available balance: {isBalanceLoading 
             ? "Loading..." 
             : balanceError 
@@ -135,15 +133,16 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
           }
         </div>
         
-        <div className="flex gap-6">
-          <div className="flex border-4 border-black flex-row gap-1"
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 lg:gap-6">
+          <div className="flex border-4 border-black flex-row gap-1 w-full sm:w-auto"
             style={{
-              padding: "clamp(1rem, 1vw, 200rem)",
-              boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
+              padding: "clamp(0.5rem, 1vw, 1rem)",
+              boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)"
             }}
           >
             <input
-              className="text-left outline-none bg-inherit text-3xl font-bold s-font rounded-full leading-none inline-flex items-center w-42"
+              className="text-left outline-none bg-inherit font-bold s-font leading-none inline-flex items-center flex-1 min-w-0"
+              style={{ fontSize: "clamp(1.25rem, 3vw, 3rem)" }}
               placeholder="0.00"
               type="number"
               inputMode="numeric"
@@ -153,60 +152,74 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
               value={amount || ''}
               onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
             />
-            <span className="inline-flex s-font text-xl leading-none items-center">USDC</span>
+            <span className="inline-flex s-font leading-none items-center whitespace-nowrap" 
+                  style={{ fontSize: "clamp(1rem, 2.5vw, 1.25rem)" }}>
+              USDC
+            </span>
           </div>
           
-          {/* Max button */}
-          <button
-            onClick={() => setAmount(maxWithdrawAmount)}
-            style={{
-              padding: "clamp(1rem, 1vw, 200rem)",
-              boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)"
-            }}
-            className="text-[#181917] bg-transparent border-4 rounded-full px-6 py-3 hover:bg-[#181917]/5 cursor-pointer transition-all duration-300 b-font disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={isBalanceLoading || maxWithdrawAmount === 0}
-          >
-            Max
-          </button>
-          
-          <button
-            onClick={handleWithdraw}
-            disabled={isWithdrawDisabled}
-            style={{
-              padding: "clamp(1rem, 1vw, 200rem)",
-              boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" 
-            }}
-            className="text-[#181917] bg-transparent border-4 rounded-full px-6 py-3 hover:bg-[#181917]/5 cursor-pointer transition-all duration-300 b-font ml-8 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isWithdrawLoading || isConfirming ? "Processing..." : "Withdraw"}
-          </button>
+          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 w-full sm:w-auto">
+            {/* Max button */}
+            <button
+              onClick={() => setAmount(maxWithdrawAmount)}
+              style={{
+                padding: "clamp(0.5rem, 1vw, 1rem)",
+                boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)",
+                fontSize: "clamp(0.875rem, 2vw, 1rem)"
+              }}
+              className="text-[#181917] bg-transparent border-4 rounded-full hover:bg-[#181917]/5 cursor-pointer transition-all duration-300 b-font disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+              disabled={isBalanceLoading || maxWithdrawAmount === 0}
+            >
+              Max
+            </button>
+            
+            <button
+              onClick={handleWithdraw}
+              disabled={isWithdrawDisabled}
+              style={{
+                padding: "clamp(0.5rem, 1vw, 1rem)",
+                boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)",
+                fontSize: "clamp(0.875rem, 2vw, 1rem)"
+              }}
+              className="text-[#181917] bg-transparent border-4 rounded-full hover:bg-[#181917]/5 cursor-pointer transition-all duration-300 b-font disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+            >
+              {isWithdrawLoading || isConfirming ? "Processing..." : "Withdraw"}
+            </button>
+          </div>
         </div>
 
         {/* Status messages */}
         {(isWithdrawLoading || isConfirming) && (
-          <div className="text-blue-600 mt-4 s-font">Confirm in your wallet...</div>
+          <div className="text-blue-600 mt-2 sm:mt-4 s-font" 
+               style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)" }}>
+            Confirm in your wallet...
+          </div>
         )}
         {isWithdrawSuccess && (
-          <div className="text-green-600 max-w-xs mt-4 s-font">
+          <div className="text-green-600 mt-2 sm:mt-4 s-font" 
+               style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)" }}>
             Withdrawal successful! Your balance will be updated soon.
           </div>
         )}
         
         {withdrawError && (
-          <div className="text-red-600 max-w-xs mt-4 s-font">
+          <div className="text-red-600 mt-2 sm:mt-4 s-font" 
+               style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)" }}>
             Withdrawal failed: {withdrawError.message}
           </div>
         )}
         
         {balanceError && (
-          <div className="text-orange-600 text-sm mt-4 s-font">
+          <div className="text-orange-600 mt-2 sm:mt-4 s-font" 
+               style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)" }}>
             Unable to load balance. Please check your connection.
           </div>
         )}
 
         {/* Amount validation */}
         {amount > 0 && amount > maxWithdrawAmount && (
-          <div className="text-orange-600 text-sm mt-4 s-font">
+          <div className="text-orange-600 mt-2 sm:mt-4 s-font" 
+               style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)" }}>
             Amount exceeds available balance
           </div>
         )}
