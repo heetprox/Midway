@@ -114,16 +114,19 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
   const isWithdrawDisabled = !isAmountValid || isWithdrawLoading || isConfirming;
 
   return (
-    <div className={`bg-white rounded-lg shadow-xl p-6 w-fit ${className}`}>
-      <div className="mb-6">
-        <h2 className="b-font text-xl mb-4">Select a chain</h2>
+    <div className={`border-4 border-black shadow-xl w-full ${className}`}
+      style={{
+        padding: "clamp(1rem, 1vw, 200rem)",
+        boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
+      }}
+    >
+      <div className="flex flex-col gap-2">
+        <h2 className="b-font text-3xl mb-4">Select a chain</h2>
         <ChainSelector />
-      </div>
-      
-      <div className="border-t border-[#181917]/20 my-6" />
-      
-      <div className="mb-6">
-        <h2 className="b-font text-xl mb-4">Amount</h2>
+        
+        <div className="" />
+        
+        <h2 className="b-font text-3xl mb-4">Withdraw Amount</h2>
         
         {/* Balance display */}
         <div className="text-sm text-gray-600 mb-2 s-font">
@@ -135,24 +138,35 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
           }
         </div>
         
-        <div className="flex flex-row gap-1">
-          <input
-            className="text-right outline-none border-none bg-inherit text-3xl font-bold inline-flex items-center w-32"
-            placeholder="0.00"
-            type="number"
-            inputMode="numeric"
-            step="0.01"
-            min="0"
-            max={maxWithdrawAmount}
-            value={amount || ''}
-            onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
-          />
-          <span className="inline-flex items-center">USDC</span>
+        <div className="flex gap-4">
+          <div className="flex border-4 border-black flex-row gap-1"
+            style={{
+              padding: "clamp(1rem, 1vw, 200rem)",
+              boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
+            }}
+          >
+            <input
+              className="text-left outline-none bg-inherit text-3xl font-bold s-font rounded-full leading-none inline-flex items-center w-42"
+              placeholder="0.00"
+              type="number"
+              inputMode="numeric"
+              step="0.01"
+              min="0"
+              max={maxWithdrawAmount}
+              value={amount || ''}
+              onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
+            />
+            <span className="inline-flex s-font text-xl leading-none items-center">USDC</span>
+          </div>
           
           {/* Max button */}
           <button
             onClick={() => setAmount(maxWithdrawAmount)}
-            className="border border-[#181917] text-[#181917] px-4 py-2 rounded-full hover:bg-[#181917] hover:text-[#FEFBEC] transition-all duration-300 b-font ml-2 disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              padding: "clamp(1rem, 1vw, 200rem)",
+              boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)"
+            }}
+            className="text-[#181917] bg-transparent border-4 rounded-full px-6 py-3 hover:bg-[#181917]/5 cursor-pointer transition-all duration-300 b-font disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isBalanceLoading || maxWithdrawAmount === 0}
           >
             Max
@@ -161,7 +175,11 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
           <button
             onClick={handleWithdraw}
             disabled={isWithdrawDisabled}
-            className="bg-[#181917] text-[#FEFBEC] px-6 py-3 rounded-full hover:bg-[#181917]/80 transition-all duration-300 b-font ml-8 disabled:opacity-50 disabled:cursor-not-allowed"
+            style={{
+              padding: "clamp(1rem, 1vw, 200rem)",
+              boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" 
+            }}
+            className="text-[#181917] bg-transparent border-4 rounded-full px-6 py-3 hover:bg-[#181917]/5 cursor-pointer transition-all duration-300 b-font ml-8 disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isWithdrawLoading || isConfirming ? "Processing..." : "Withdraw"}
           </button>
@@ -169,18 +187,11 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
 
         {/* Status messages */}
         {(isWithdrawLoading || isConfirming) && (
-          <div className="text-blue-600 mt-4 s-font">
-            {isWithdrawLoading 
-              ? "Confirm in your wallet..." 
-              : "Confirming transaction..."
-            }
-          </div>
+          <div className="text-blue-600 mt-4 s-font">Confirm in your wallet...</div>
         )}
-        
         {isWithdrawSuccess && (
           <div className="text-green-600 max-w-xs mt-4 s-font">
-            Withdrawal successful! Your tokens will arrive at your wallet soon.
-            Refreshing page in 5 seconds...
+            Withdrawal successful! Your balance will be updated soon.
           </div>
         )}
         

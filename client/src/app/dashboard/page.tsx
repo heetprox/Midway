@@ -110,8 +110,8 @@ const Dashboard = () => {
             </div>
 
             {/* Withdraw Dialog */}
-            <div className="flex justify-center transform hover:scale-105 transition-all duration-300">
-              <div className="w-full max-w-md">
+            <div className="flex w-full justify-center">
+              <div className="w-full">
                 <WithdrawDialog />
               </div>
             </div>

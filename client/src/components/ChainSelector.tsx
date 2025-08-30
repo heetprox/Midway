@@ -51,7 +51,7 @@ const ChainSelector = ({ className }: ChainSelectorProps) => {
   const currentChain = chainList.find((c) => c.id === chainId);
 
   return (
-    <div className="border-4 border-[#181917] w-fit rounded-full"
+    <div className="border-2 border-[#181917] w-fit rounded-full"
     style={{
       padding: "clamp(1rem, 1vw, 200rem)",
       boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
