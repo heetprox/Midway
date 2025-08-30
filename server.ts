@@ -4,8 +4,8 @@ import externalRouterAbi from "./abi/ExternalRouter.json";
 import { EthRouter, ModeRouter, OptimismRouter, ZoraRouter } from "./constants";
 
 // Types
-type ChainType = "optimism" | "zora" | "mode" | "eth";
-type DestinationChain = "zora" | "mode" | "eth";
+type ChainType = "optimism" | "zora" | "mode" ;
+type DestinationChain = "zora" | "mode" ;
 
 interface ChainConfig {
   name: string;
@@ -15,9 +15,10 @@ interface ChainConfig {
 }
 
 interface MessageData {
-  [key: number]: string | bigint;
-  0: bigint; 
-  1: string;
+  [key: number]: string | bigint | undefined;
+  0: bigint; // chainId
+  1: string; // addressCombination
+  2?: string; // payload (optional)
 }
 
 // Environment configuration
@@ -27,32 +28,32 @@ if (!BOT_PRIVATE_KEY) {
   throw new Error("BOT_PRIVATE_KEY environment variable is required");
 }
 
-// Chain configurations
+// Chain configurations - FIXED to match deploy script
 const CHAIN_CONFIGS: Record<ChainType, ChainConfig> = {
-  optimism: {
-    name: "Optimism Sepolia",
-    rpcUrl: process.env.OPTIMISM_SEPOLIA_RPC_URL!,
-    chainId: 10132n,
-    routerAddress: OptimismRouter,
-  },
-  zora: {
-    name: "Zora Sepolia",
-    rpcUrl: process.env.ZORA_SEPOLIA_RPC_URL!,
-    chainId: 9999n,
-    routerAddress: ZoraRouter,
-  },
-  mode: {
-    name: "Mode Sepolia",
-    rpcUrl: process.env.MODE_SEPOLIA_RPC_URL!,
-    chainId: 9998n,
-    routerAddress: ModeRouter,
-  },
-  eth: {
-    name: "Ethereum Sepolia",
-    rpcUrl: process.env.ETH_SEPOLIA_RPC_URL!,
-    chainId: 11155111n,
-    routerAddress: EthRouter,
-  },
+optimism: {
+  name: "Optimism Sepolia",
+  rpcUrl: process.env.OPTIMISM_SEPOLIA_RPC_URL!,
+  chainId: 420n, // FIXED: was 10132n
+  routerAddress: OptimismRouter,
+},
+zora: {
+  name: "Zora Sepolia",
+  rpcUrl: process.env.ZORA_SEPOLIA_RPC_URL!,
+  chainId: 9999n,
+  routerAddress: ZoraRouter,
+},
+mode: {
+  name: "Mode Sepolia",
+  rpcUrl: process.env.MODE_SEPOLIA_RPC_URL!,
+  chainId: 9998n,
+  routerAddress: ModeRouter,
+},
+  // eth: {
+  //   name: "Ethereum Sepolia",
+  //   rpcUrl: process.env.ETH_SEPOLIA_RPC_URL!,
+  //   chainId: 11155111n,
+  //   routerAddress: EthRouter,
+  // },
 } as const;
 
 class CrossChainRelayer {
@@ -102,11 +103,15 @@ class CrossChainRelayer {
   private processMessage(message: MessageData, fromChain: ChainType): MessageData {
     const processedMessage = { ...message } as MessageData;
     
-    // Update chain ID based on source
+    // FIXED: Set source chain ID for lzReceive (where message came from)
     processedMessage[0] = CHAIN_CONFIGS[fromChain].chainId;
     
-    // Transform sender/receiver addresses
-    processedMessage[1] = this.replaceSenderAndReceiver(message[1]);
+    // FIXED: Only swap addresses for return path (Core → Client)
+    if (fromChain === "optimism") {
+      // Optimism → Client: swap addresses for return path
+      processedMessage[1] = this.replaceSenderAndReceiver(message[1]);
+    }
+    // For Client → Optimism: keep original addresses
     
     return processedMessage;
   }
@@ -121,7 +126,7 @@ class CrossChainRelayer {
     console.log("\n📥 Processing queued messages...");
 
     // Process Optimism → Zora/Mode messages
-    await this.processChainMessages("optimism", ["zora", "mode", "eth"]);
+    await this.processChainMessages("optimism", ["zora", "mode"]);
     
     // Process Zora → Optimism messages
     await this.processChainMessages("zora", ["optimism"]);
@@ -130,7 +135,7 @@ class CrossChainRelayer {
     await this.processChainMessages("mode", ["optimism"]);
 
     // Process Eth → Optimism messages
-    await this.processChainMessages("eth", ["optimism"]);
+    // await this.processChainMessages("eth", ["optimism"]);
   }
 
   private async processChainMessages(
@@ -152,24 +157,32 @@ class CrossChainRelayer {
         const message: MessageData = await this.routers[sourceChain].messageQueue(i);
         console.log(`📨 Processing message ${i + 1}/${queueLength}:`, message);
 
-        if (sourceChain === "optimism") {
-          // Optimism → Zora/Mode routing
-          const targetChain = this.getDestinationChain(message[0]);
-          
-          if (!targetChain) {
-            console.log("⏭️  Message not for supported chains, skipping...");
-            continue;
+        try {
+          if (sourceChain === "optimism") {
+            // Optimism → Zora/Mode routing
+            const targetChain = this.getDestinationChain(message[0]);
+            
+            if (!targetChain) {
+              console.log("⏭️  Message not for supported chains, skipping...");
+              // FIXED: Pop skipped messages so they don't get stuck
+              await this.routers[sourceChain].pop();
+              continue;
+            }
+
+            await this.routeMessage(message, sourceChain, targetChain, 0);
+          } else {
+            // Zora/Mode → Optimism routing
+            await this.routeMessage(message, sourceChain, "optimism", 0);
           }
 
-          await this.routeMessage(message, sourceChain, targetChain);
-        } else {
-          // Zora/Mode → Optimism routing
-          await this.routeMessage(message, sourceChain, "optimism");
+          // FIXED: Only remove message after successful routing
+          await this.routers[sourceChain].pop();
+          console.log(`✅ Popped message from ${CHAIN_CONFIGS[sourceChain].name}`);
+        } catch (error) {
+          console.error(`❌ Failed to route message ${i + 1} after retries:`, error);
+          // FIXED: Don't pop on failure - will retry on next cycle
+          break; // Exit loop to avoid processing same message repeatedly
         }
-
-        // Remove processed message
-        await this.routers[sourceChain].pop();
-        console.log(`✅ Popped message from ${CHAIN_CONFIGS[sourceChain].name}`);
       }
 
       console.log(`🎉 Processed ${queueLength} messages on ${CHAIN_CONFIGS[sourceChain].name}`);
@@ -182,21 +195,66 @@ class CrossChainRelayer {
   private async routeMessage(
     message: MessageData,
     fromChain: ChainType,
-    toChain: ChainType
+    toChain: ChainType,
+    retryCount = 0
   ): Promise<void> {
+    const maxRetries = 3;
+    const baseDelay = 2000; // 2 seconds
+    
     try {
       const processedMessage = this.processMessage(message, fromChain);
       
       console.log(`🚀 Routing message: ${CHAIN_CONFIGS[fromChain].name} → ${CHAIN_CONFIGS[toChain].name}`);
       
-      const tx = await this.routers[toChain].route(processedMessage);
+      // Convert to proper struct format for the contract
+      const messageStruct = {
+        chainId: processedMessage[0],
+        addressCombination: processedMessage[1],
+        payload: processedMessage[2] || "0x"
+      };
+      
+      const tx = await this.routers[toChain].route(messageStruct);
       await tx.wait();
       
       console.log(`✅ Message routed to ${CHAIN_CONFIGS[toChain].name} - TX: ${tx.hash}`);
-    } catch (error) {
-      console.error(`❌ Failed to route message to ${toChain}:`, error);
+    } catch (error: any) {
+      const isRetryableError = this.isRetryableError(error);
+      
+      if (isRetryableError && retryCount < maxRetries) {
+        const delay = baseDelay * Math.pow(2, retryCount); // Exponential backoff
+        console.warn(`⚠️  Retryable error routing to ${toChain} (attempt ${retryCount + 1}/${maxRetries + 1}). Retrying in ${delay}ms...`);
+        console.warn(`Error: ${error.message || error}`);
+        
+        await new Promise(resolve => setTimeout(resolve, delay));
+        return this.routeMessage(message, fromChain, toChain, retryCount + 1);
+      }
+      
+      console.error(`❌ Failed to route message to ${toChain} after ${retryCount + 1} attempts:`, error);
       throw error;
     }
+  }
+
+  private isRetryableError(error: any): boolean {
+    if (!error) return false;
+    
+    const errorMessage = error.message || error.toString();
+    const errorCode = error.code;
+    
+    // Retry on network errors, RPC errors, and temporary service issues
+    const retryableConditions = [
+      errorMessage.includes('503 Service Unavailable'),
+      errorMessage.includes('502 Bad Gateway'),
+      errorMessage.includes('504 Gateway Timeout'),
+      errorMessage.includes('Internal server error'),
+      errorMessage.includes('Forwarder error'),
+      errorMessage.includes('network error'),
+      errorMessage.includes('timeout'),
+      errorCode === 'SERVER_ERROR',
+      errorCode === 'NETWORK_ERROR',
+      errorCode === 'TIMEOUT'
+    ];
+    
+    return retryableConditions.some(condition => condition);
   }
 
   private async setupEventListeners(): Promise<void> {
@@ -213,11 +271,13 @@ class CrossChainRelayer {
           return;
         }
 
-        await this.routeMessage(message, "optimism", targetChain);
+        await this.routeMessage(message, "optimism", targetChain, 0);
+        // FIXED: Only pop after successful routing
         await this.routers.optimism.pop();
         console.log("✅ Processed Optimism message");
       } catch (error) {
         console.error("❌ Error processing Optimism event:", error);
+        // FIXED: Don't pop on failure - message stays in queue for retry
       }
     });
 
@@ -226,11 +286,13 @@ class CrossChainRelayer {
       try {
         console.log("🪩 Received message from Zora:", message);
         
-        await this.routeMessage(message, "zora", "optimism");
+        await this.routeMessage(message, "zora", "optimism", 0);
+        // FIXED: Only pop after successful routing
         await this.routers.zora.pop();
         console.log("✅ Processed Zora message");
       } catch (error) {
         console.error("❌ Error processing Zora event:", error);
+        // FIXED: Don't pop on failure - message stays in queue for retry
       }
     });
 
@@ -239,27 +301,29 @@ class CrossChainRelayer {
       try {
         console.log("🌐 Received message from Mode:", message);
         
-        await this.routeMessage(message, "mode", "optimism");
+        await this.routeMessage(message, "mode", "optimism", 0);
+        // FIXED: Only pop after successful routing
         await this.routers.mode.pop();
         console.log("✅ Processed Mode message");
       } catch (error) {
         console.error("❌ Error processing Mode event:", error);
+        // FIXED: Don't pop on failure - message stays in queue for retry
       }
     });
 
     // Eth events → Optimism
-    this.routers.eth.on("MessageSent", async (message: MessageData) => {
-      try {
-        console.log("🌐 Received message from Eth:", message);
+    // this.routers.eth.on("MessageSent", async (message: MessageData) => {
+    //   try {
+    //     console.log("🌐 Received message from Eth:", message);
         
-        await this.routeMessage(message, "eth", "optimism");
+    //     await this.routeMessage(message, "eth", "optimism");
     
-        await this.routers.eth.pop();
-        console.log("✅ Processed Eth message");
-      } catch (error) {
-        console.error("❌ Error processing Eth event:", error);
-      }
-    });
+    //     await this.routers.eth.pop();
+    //     console.log("✅ Processed Eth message");
+    //   } catch (error) {
+    //     console.error("❌ Error processing Eth event:", error);
+    //   }
+    // });
 
     console.log("✅ Event listeners configured");
   }
@@ -270,7 +334,7 @@ class CrossChainRelayer {
     await this.routers.optimism.removeAllListeners();
     await this.routers.zora.removeAllListeners();
     await this.routers.mode.removeAllListeners();
-    await this.routers.eth.removeAllListeners();
+    // await this.routers.eth.removeAllListeners();
     console.log("✅ Event listeners removed");
   }
 
