@@ -106,12 +106,14 @@ class CrossChainRelayer {
     // FIXED: Set source chain ID for lzReceive (where message came from)
     processedMessage[0] = CHAIN_CONFIGS[fromChain].chainId;
     
-    // FIXED: Only swap addresses for return path (Core → Client)
+    // FIXED: Address handling based on message direction
     if (fromChain === "optimism") {
       // Optimism → Client: swap addresses for return path
       processedMessage[1] = this.replaceSenderAndReceiver(message[1]);
+    } else {
+      // Client → Optimism: addresses from MidPayClient are in wrong order, need to swap
+      processedMessage[1] = this.replaceSenderAndReceiver(message[1]);
     }
-    // For Client → Optimism: keep original addresses
     
     return processedMessage;
   }
@@ -136,7 +138,7 @@ class CrossChainRelayer {
 
     // Process Eth → Optimism messages
     // await this.processChainMessages("eth", ["optimism"]);
-  }
+  }    
 
   private async processChainMessages(
     sourceChain: ChainType, 
