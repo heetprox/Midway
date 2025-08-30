@@ -84,22 +84,29 @@ export default function USDCMintDialog({ className }: USDCMintDialogProps) {
       boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
     }}
     >
-      <div>
-        <h2 className="b-font text-xl text-[#181917] mb-4">Need USDC?</h2>
-        <p className="text-sm text-gray-600 mb-6 s-font">
+      <div className="flex flex-col gap-4">
+        <div className="flex flex-col">
+        <h2 className="b-font text-3xl text-[#181917] mb-4">Need USDC?</h2>
+        <p className="text-lg text-gray-600 mb-6 s-font">
           Mint test USDC tokens to use with the deposit feature.
         </p>
         <button
-          className="bg-[#181917] text-[#FEFBEC] px-6 py-3 rounded-full hover:bg-[#181917]/80 transition-all duration-300 b-font w-full disabled:opacity-50 disabled:cursor-not-allowed"
+          className="bg-transparent border-4 text-[#000] text-2xl cursor-pointer hover:bg-[#181917]/5 transition-all duration-300 b-font w-full disabled:opacity-50 disabled:cursor-not-allowed"
           disabled={isLoading || !address || !chainId}
           onClick={handleMint}
+          style={{
+            padding: "clamp(1rem, 1vw, 200rem)",
+            boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
+          }}
         >
           {isLoading ? "Minting..." : "Mint USDC"}
         </button>
+        </div>
+
         {isLoading && (
-          <div className="text-blue-600 mt-4 s-font">Confirm in your wallet...</div>
+          <div className="text-black mt-4 s-font">Confirm in your wallet...</div>
         )}
-        {isMinting && <div className="text-blue-600 mt-4 s-font">Processing mint...</div>}
+        {isMinting && <div className="text-black text-lg mt-4 s-font">Processing mint...</div>}
         {isSuccess && (
           <div className="text-green-600 mt-4 s-font">
             Successfully minted! Page will refresh shortly.

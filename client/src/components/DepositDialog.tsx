@@ -114,7 +114,12 @@ export default function DepositDialog({ className }: DepositDialogProps) {
   };
 
   return (
-    <div className={`bg-white rounded-lg shadow-xl w-fit ${className}`}>
+    <div className={`border-4 border-black shadow-xl w-full ${className}`}
+    style={{
+      padding: "clamp(1rem, 1vw, 200rem)",
+      boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
+    }}
+    >
       <div className="mb-6">
         <h2 className="b-font text-xl mb-4">Select a chain</h2>
         <ChainSelector />

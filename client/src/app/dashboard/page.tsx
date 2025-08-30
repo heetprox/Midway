@@ -77,16 +77,16 @@ const Dashboard = () => {
         {/* Main Content Grid */}
         <div className="flex w-full  h-[90vh] gap-6 mx-auto">
           {/* Left Column */}
-          <div className="w-[40%] h-full  space-y-12">
+          <div className="w-[40%] h-full  flex flex-col gap-4">
             {/* Balance Display */}
-            <div className="flex w-full h-2/3 justify-center">
+            <div className="flex w-full h-fit justify-center">
               <div className="w-full h-full">
                 <BalanceDialog />
               </div>
             </div>
 
             {/* USDC Mint Dialog */}
-            <div className="flex justify-center h-1/3">
+            <div className="flex justify-center h-fit">
               <div className="w-full h-full">
                 <USDCMintDialog />
               </div>
@@ -94,10 +94,10 @@ const Dashboard = () => {
           </div>
 
           {/* Right Column */}
-          <div className="w-[60%]">
+          <div className="w-[60%] flex flex-col gap-4">
             {/* Deposit Dialog */}
-            <div className="flex justify-center transform hover:scale-105 transition-all duration-300">
-              <div className="w-full max-w-md">
+            <div className="flex w-full justify-center">
+              <div className="w-full">
                 <DepositDialog />
               </div>
             </div>
