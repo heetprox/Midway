@@ -52,7 +52,7 @@ const Dashboard = () => {
         <div className="absolute bottom-20 left-1/3 w-40 h-40 rounded-full bg-[#181917] blur-3xl"></div>
       </div>
 
-      <div className="relative w-full h-full z-10" style={{ padding: "clamp(1.25rem, 2vw, 2rem)" }}>
+      <div className="relative w-full flex flex-col gap-0 h-full z-10" style={{ padding: "clamp(1.25rem, 2vw, 2rem)" }}>
         {/* Header */}
         <div className="flex justify-between h-fit items-center ">
           <div className="group">
@@ -67,7 +67,11 @@ const Dashboard = () => {
           <button
             onClick={handleDisconnect}
             className="relative bg-[#181917] text-[#FEFBEC] px-8 py-4 rounded-full hover:bg-[#181917]/90 transition-all duration-300 b-font shadow-lg hover:shadow-xl transform hover:scale-105 group overflow-hidden"
-            style={{ fontSize: "clamp(0.875rem, 1.5vw, 1rem)" }}
+            
+            style={{ fontSize: "clamp(0.875rem, 1.5vw, 1rem)",
+              padding: "clamp(1rem, 1vw, 200rem)",
+            boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)"
+             }}
           >
             <div className="absolute inset-0 bg-gradient-to-r from-[#181917]/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300"></div>
             <span className="relative z-10">Disconnect Wallet</span>

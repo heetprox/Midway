@@ -114,13 +114,17 @@ export default function DepositDialog({ className }: DepositDialogProps) {
   };
 
   return (
-    <div className={`border-4 border-black shadow-xl w-full ${className}`}
+    <div className={`border-4 flex flex-col gap-4 border-black shadow-xl w-full ${className}`}
       style={{
         padding: "clamp(1rem, 1vw, 200rem)",
         boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
       }}
     >
-      <div className="" />
+      <div className="flex flex-col gap-2">
+      <h2 className="b-font text-3xl mb-4">Select a chain</h2>
+        <ChainSelector />
+        </div>
+        
       <div className="flex flex-col gap-2">
         <h2 className="b-font text-3xl mb-4">Deposit Amount</h2>
         <div className="flex gap-4">
@@ -131,7 +135,7 @@ export default function DepositDialog({ className }: DepositDialogProps) {
                   }}
         >
           <input
-            className="text-left outline-none bg-inherit text-3xl font-bold  s-font rounded-full leading-none inline-flex items-center w-42"
+            className="text-left outline-none bg-inherit text-3xl font-bold  s-font leading-none inline-flex items-center w-42"
             placeholder="0.00"
             inputMode="numeric"
             onChange={handleAmountChange}
