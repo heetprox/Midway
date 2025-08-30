@@ -73,32 +73,20 @@ const Dashboard = () => {
           </button>
         </div>
 
-        {/* Wallet Address Display */}
-        <div className="mb-12 text-center">
-          <div className="s-font text-xl text-[#181917]/80 mb-4">Connected Wallet</div>
-          <div className="bg-white/50 backdrop-blur-sm border border-[#181917]/10 rounded-2xl p-6 inline-block shadow-lg hover:shadow-xl transition-all duration-300 group">
-            <div className="flex items-center gap-3">
-              <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
-              <code className="text-sm font-mono text-[#181917] group-hover:text-[#181917]/80 transition-colors duration-300">
-                {address}
-              </code>
-            </div>
-          </div>
-        </div>
 
         {/* Main Content Grid */}
-        <div className="flex w-full  h-[80vh] gap-6 mx-auto">
+        <div className="flex w-full  h-[90vh] gap-6 mx-auto">
           {/* Left Column */}
-          <div className="w-[30%] h-full  space-y-12">
+          <div className="w-[40%] h-full  space-y-12">
             {/* Balance Display */}
-            <div className="flex w-full h-1/2 justify-center">
+            <div className="flex w-full h-2/3 justify-center">
               <div className="w-full h-full">
                 <BalanceDialog />
               </div>
             </div>
 
             {/* USDC Mint Dialog */}
-            <div className="flex justify-center h-1/2">
+            <div className="flex justify-center h-1/3">
               <div className="w-full h-full">
                 <USDCMintDialog />
               </div>
@@ -106,7 +94,7 @@ const Dashboard = () => {
           </div>
 
           {/* Right Column */}
-          <div className="w-[70%]">
+          <div className="w-[60%]">
             {/* Deposit Dialog */}
             <div className="flex justify-center transform hover:scale-105 transition-all duration-300">
               <div className="w-full max-w-md">

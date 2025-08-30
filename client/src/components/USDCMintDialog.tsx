@@ -78,7 +78,12 @@ export default function USDCMintDialog({ className }: USDCMintDialogProps) {
   }
 
   return (
-    <div className={`bg-white rounded-lg h-full  p-6 w-full ${className}`}>
+    <div className={`  h-full border-4 border-black  p-6 w-full ${className}`}
+    style={{
+      padding: "clamp(1rem, 1vw, 200rem)",
+      boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
+    }}
+    >
       <div>
         <h2 className="b-font text-xl text-[#181917] mb-4">Need USDC?</h2>
         <p className="text-sm text-gray-600 mb-6 s-font">

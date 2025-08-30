@@ -1,14 +1,14 @@
 'use client';
 
 import { useEffect } from "react";
-import { 
-  useAccount, 
-  useReadContract, 
+import {
+  useAccount,
+  useReadContract,
   useChainId,
-  useSwitchChain 
+  useSwitchChain
 } from "wagmi";
 import { Address } from "viem";
-import { optimismSepolia, sepolia as ethSepolia, zoraSepolia , modeTestnet as modeSepolia } from "wagmi/chains";
+import { optimismSepolia, sepolia as ethSepolia, zoraSepolia, modeTestnet as modeSepolia } from "wagmi/chains";
 import MidPayCore from "../abi/MidPayCore.json";
 import fakeUSDC from "../abi/FakeUSDC.json";
 import { toFixed } from "../utils/bigIntHelpers";
@@ -70,13 +70,69 @@ export default function BalanceDialog() {
   const chainName = currentChain?.name || 'Unknown Chain';
 
   return (
-    <div className="w-full flex flex-col h-full border-4 border-black rounded-2xl"
-    style={{
-      padding: "clamp(1.25rem, 2vw, 200rem)"
-    }}
+    <div className="w-full flex flex-col gap-4 s-font h-full  rounded-2xl"
+      style={{
+        // padding: "clamp(1.25rem, 1vw, 200rem)"
+      }}
     >
-      <div className="text-black"> Zora Testnet</div>  
-     
+      <div className="flex gap-4">
+        <div className="text-black w-fit text-xl leading-none border-2 border-black rounded-full"
+          style={{
+            padding: "clamp(1rem, 1vw, 200rem)",
+            boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
+          }}
+        >
+          Zora Testnet
+        </div>
+        <div className="text-black w-fit text-xl leading-none border-2 border-black rounded-full"
+          style={{
+            padding: "clamp(1rem, 1vw, 200rem)",
+            boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
+          }}
+        >
+          [address] : {address}
+        </div>
+
+      </div>
+
+
+      <div className="flex gap-2 border-4 border-black flex-col w-full"
+        style={{
+          padding: "clamp(1rem, 1vw, 200rem)",
+          boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
+        }}
+      >
+        <div className="b-font text-3xl">CORE BALANCE</div>
+
+        {isMidPayCoreBalanceLoading ? (
+          <div className="b-font text-3xl ">🡢 Loading...</div>
+        )
+          :
+          coreBalanceError ? (
+            <div className="s-font text-3xl ">🡢 Error</div>
+          )
+            :
+            (
+              <div className="s-font text-3xl ">🡢 {toFixed(MidPayCoreBalance as bigint)} USDC</div>
+            )
+        }
+
+      </div>
+
+      <div className="flex gap-2 border-4 border-black flex-col w-full"
+        style={{
+          padding: "clamp(1rem, 1vw, 200rem)",
+          boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
+        }}
+      >
+        <div className="b-font text-3xl">MINTED USDC</div>
+
+        {isWalletBalanceLoading ? (<div className="s-font text-3xl ">🡢 Loading...</div>) : walletBalanceError ? (<div className="s-font text-3xl ">🡢 Error</div>) : (<div className="s-font text-3xl ">🡢 {toFixed(walletBalance as bigint)} USDC</div>)}
+
+      </div>
+
+
+
     </div>
   );
 }
