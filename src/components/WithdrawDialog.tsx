@@ -13,7 +13,6 @@ import {
   useSwitchChain,
 } from "wagmi";
 import { Address, formatUnits, parseUnits } from "viem";
-import { optimismSepolia, sepolia as ethSepolia, zoraSepolia, modeTestnet as modeSepolia } from "wagmi/chains";
 import MidPayCore from "../abi/MidPayCore.json";
 import MidPayClient from "../abi/MidPayClient.json";
 import { toBigInt, toNumber } from "../utils/bigIntHelpers";
@@ -21,9 +20,9 @@ import { toBigInt, toNumber } from "../utils/bigIntHelpers";
 import { OptimismCore } from "@/context/constants";
 import { getMidPayAddress } from "@/utils/addressHelpers";
 
-// Define supported chains
-const SUPPORTED_CHAINS = [optimismSepolia, ethSepolia, zoraSepolia, modeSepolia] as const;
-const DEFAULT_CHAIN = optimismSepolia;
+// LayerZero chain IDs that match backend configuration
+const SUPPORTED_CHAIN_IDS = [420, 111, 9999, 9998] as const; // Optimism, Eth, Zora, Mode
+const DEFAULT_CHAIN_ID = 420; // Optimism Sepolia LayerZero ID
 
 interface WithdrawDialogProps {
   className?: string;
@@ -40,8 +39,8 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
 
   // Force connection to Optimism Sepolia if not connected to a supported chain
   useEffect(() => {
-    if (chainId && !SUPPORTED_CHAINS.some(chain => chain.id === chainId)) {
-      switchChain?.({ chainId: DEFAULT_CHAIN.id });
+    if (chainId && !SUPPORTED_CHAIN_IDS.includes(chainId as any)) {
+      switchChain?.({ chainId: DEFAULT_CHAIN_ID });
     }
   }, [chainId, switchChain]);
 
@@ -52,7 +51,7 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
   } = useReadContract({
     address: OptimismCore as Address,
     abi: MidPayCore.abi,
-    chainId: optimismSepolia.id,
+    chainId: 420, // Optimism LayerZero chain ID
     functionName: "balances",
     args: [address as Address],
     query: {

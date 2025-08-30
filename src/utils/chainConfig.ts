@@ -8,12 +8,33 @@ import {
 } from "wagmi/chains";
 import { injected } from "wagmi/connectors";
 
-// Define chains with optimismSepolia as the first/default chain
-const chains = [optimismSepolia, ethSepolia, modeSepolia, zoraSepolia] as const;
+// Custom chain definitions that match your LayerZero setup
+const customZoraSepolia = {
+  ...zoraSepolia,
+  id: 9999, // Use LayerZero chain ID instead of real chain ID
+} as const;
+
+const customModeSepolia = {
+  ...modeSepolia,
+  id: 9998, // Use LayerZero chain ID instead of real chain ID
+} as const;
+
+const customOptimismSepolia = {
+  ...optimismSepolia,
+  id: 420, // Use LayerZero chain ID instead of real chain ID
+} as const;
+
+const customEthSepolia = {
+  ...ethSepolia,
+  id: 111, // Use LayerZero chain ID instead of real chain ID
+} as const;
+
+// Define chains using LayerZero chain IDs for consistency
+const chains = [customOptimismSepolia, customEthSepolia, customModeSepolia, customZoraSepolia] as const;
 
 // Create public client for Optimism Sepolia
 export const publicClient = createPublicClient({
-  chain: optimismSepolia,
+  chain: customOptimismSepolia,
   transport: http(),
 });
 
@@ -36,9 +57,9 @@ export const config = createConfig({
     }),
   ],
   transports: {
-    [optimismSepolia.id]: http(),
-    [ethSepolia.id]: http(),
-    [modeSepolia.id]: http(),
-    [zoraSepolia.id]: http(),
+    [customOptimismSepolia.id]: http(),
+    [customEthSepolia.id]: http(),
+    [customModeSepolia.id]: http(),
+    [customZoraSepolia.id]: http(),
   },
 });

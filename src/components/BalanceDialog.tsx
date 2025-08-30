@@ -8,16 +8,22 @@ import {
   useSwitchChain 
 } from "wagmi";
 import { Address } from "viem";
-import { optimismSepolia, sepolia as ethSepolia, zoraSepolia , modeTestnet as modeSepolia } from "wagmi/chains";
 import MidPayCore from "../abi/MidPayCore.json";
 import fakeUSDC from "../abi/FakeUSDC.json";
 import { toFixed } from "../utils/bigIntHelpers";
 import { getUsdcAddress } from "../utils/addressHelpers";
 import { OptimismCore } from "@/context/constants";
 
-// Define supported chains
-const SUPPORTED_CHAINS = [optimismSepolia, ethSepolia, zoraSepolia, modeSepolia] as const;
-const DEFAULT_CHAIN = optimismSepolia;
+// LayerZero chain IDs that match backend configuration
+const SUPPORTED_CHAIN_IDS = [420, 111, 9999, 9998] as const; // Optimism, Eth, Zora, Mode
+const DEFAULT_CHAIN_ID = 420; // Optimism Sepolia LayerZero ID
+
+const CHAIN_NAMES = {
+  420: "Optimism Sepolia",
+  111: "Ethereum Sepolia", 
+  9999: "Zora Sepolia",
+  9998: "Mode Sepolia",
+} as const;
 
 export default function BalanceDialog() {
   const { address } = useAccount();
@@ -26,12 +32,12 @@ export default function BalanceDialog() {
 
   // Force connection to Optimism Sepolia if not connected to a supported chain
   useEffect(() => {
-    if (chainId && !SUPPORTED_CHAINS.some(chain => chain.id === chainId)) {
-      switchChain?.({ chainId: DEFAULT_CHAIN.id });
+    if (chainId && !SUPPORTED_CHAIN_IDS.includes(chainId as any)) {
+      switchChain?.({ chainId: DEFAULT_CHAIN_ID });
     }
   }, [chainId, switchChain]);
 
-  // Read MidPay balance from core contract on Optimism Sepolia
+  // Read MidPay balance from core contract on Optimism Sepolia (LayerZero chain ID 420)
   const {
     data: MidPayCoreBalance,
     isLoading: isMidPayCoreBalanceLoading,
@@ -39,7 +45,7 @@ export default function BalanceDialog() {
   } = useReadContract({
     address: OptimismCore as Address,
     abi: MidPayCore.abi,
-    chainId: optimismSepolia.id,
+    chainId: 420, // Optimism LayerZero chain ID
     functionName: "balances",
     args: [address as Address],
     query: {
@@ -65,9 +71,10 @@ export default function BalanceDialog() {
     },
   });
 
-  // Get current chain name for display
-  const currentChain = SUPPORTED_CHAINS.find(chain => chain.id === chainId);
-  const chainName = currentChain?.name || 'Unknown Chain';
+  // Get current chain name for display  
+  const chainName = chainId && (chainId in CHAIN_NAMES) 
+    ? CHAIN_NAMES[chainId as keyof typeof CHAIN_NAMES]
+    : 'Unknown Chain';
 
   return (
     <div className="bg-white rounded-lg shadow-xl p-6 w-96">
@@ -127,7 +134,7 @@ export default function BalanceDialog() {
         )}
 
         {/* Chain switching hint */}
-        {chainId && !SUPPORTED_CHAINS.some(chain => chain.id === chainId) && (
+        {chainId && !SUPPORTED_CHAIN_IDS.includes(chainId as any) && (
           <div className="text-orange-600 text-sm text-center mt-2 s-font">
             Please switch to a supported network
           </div>
