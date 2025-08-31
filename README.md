@@ -146,6 +146,7 @@ sequenceDiagram
 - MetaMask or compatible wallet
 - Testnet ETH on supported chains
 
+
 ### Frontend Setup
 
 ```bash
