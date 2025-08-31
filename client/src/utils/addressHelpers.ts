@@ -1,10 +1,29 @@
-import { EthClient, EthUSDC, ModeUSDC, OptimismCore, OptimismUSDC, ZoraUSDC, ModeClient, ZoraClient } from "@/context/constants";
+import { 
+  EthClient, 
+  EthUSDC, 
+  OptimismCore, 
+  OptimismUSDC, 
+  ZoraUSDC, 
+  ZoraClient, 
+  WorldchainUSDC, 
+  WorldchainClient, 
+  BaseUSDC, 
+  BaseClient, 
+  InkUSDC, 
+  InkClient, 
+  UnichainUSDC, 
+  UnichainClient, 
+  PolygonUSDC, 
+  PolygonClient 
+} from "@/context/constants";
 import {
   optimismSepolia,
   sepolia as ethSepolia,
-  modeTestnet as modeSepolia,
   zoraSepolia,
+  baseSepolia,
+  polygonAmoy,
 } from "wagmi/chains";
+import { worldchainSepolia, inkSepolia, unichainSepolia } from "./chainConfig";
 
 // Mapping between real blockchain chain IDs and LayerZero chain IDs
 const REAL_TO_LAYERZERO_CHAIN_ID = {
@@ -40,8 +59,6 @@ export function getUsdcAddress(chain: number | undefined): string {
       return EthUSDC;
     case zoraSepolia.id:
       return ZoraUSDC;
-    case modeSepolia.id:
-      return ModeUSDC;
     default:
       return OptimismUSDC;
   }
@@ -57,8 +74,6 @@ export function getMidPayAddress(chain: number | undefined): string {
       return EthClient;
     case zoraSepolia.id:
       return ZoraClient;
-    case modeSepolia.id:
-      return ModeClient;
     default:
       return OptimismCore;
   }

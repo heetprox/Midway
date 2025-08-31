@@ -1,11 +1,20 @@
 import { ethers, getNumber, type Contract, type Wallet } from "ethers";
 import { JsonRpcProvider, NonceManager } from "ethers";
 import externalRouterAbi from "./abi/ExternalRouter.json";
-import { EthRouter, ModeRouter, OptimismRouter, ZoraRouter } from "./constants";
+import { 
+  EthRouter, 
+  OptimismRouter, 
+  ZoraRouter, 
+  WorldchainRouter, 
+  BaseRouter, 
+  InkRouter, 
+  UnichainRouter, 
+  PolygonRouter 
+} from "./constants";
 
 // Types
-type ChainType = "optimism" | "zora" | "mode" ;
-type DestinationChain = "zora" | "mode" ;
+type ChainType = "optimism" | "eth" | "zora" | "worldchain" | "base" | "ink" | "unichain" | "polygon";
+type DestinationChain = "eth" | "zora" | "worldchain" | "base" | "ink" | "unichain" | "polygon";
 
 interface ChainConfig {
   name: string;
@@ -28,32 +37,56 @@ if (!BOT_PRIVATE_KEY) {
   throw new Error("BOT_PRIVATE_KEY environment variable is required");
 }
 
-// Chain configurations - FIXED to match deploy script
+// Chain configurations - Updated with new networks
 const CHAIN_CONFIGS: Record<ChainType, ChainConfig> = {
-optimism: {
-  name: "Optimism Sepolia",
-  rpcUrl: process.env.OPTIMISM_SEPOLIA_RPC_URL!,
-  chainId: 420n, // FIXED: was 10132n
-  routerAddress: OptimismRouter,
-},
-zora: {
-  name: "Zora Sepolia",
-  rpcUrl: process.env.ZORA_SEPOLIA_RPC_URL!,
-  chainId: 9999n,
-  routerAddress: ZoraRouter,
-},
-mode: {
-  name: "Mode Sepolia",
-  rpcUrl: process.env.MODE_SEPOLIA_RPC_URL!,
-  chainId: 9998n,
-  routerAddress: ModeRouter,
-},
-  // eth: {
-  //   name: "Ethereum Sepolia",
-  //   rpcUrl: process.env.ETH_SEPOLIA_RPC_URL!,
-  //   chainId: 11155111n,
-  //   routerAddress: EthRouter,
-  // },
+  optimism: {
+    name: "Optimism Sepolia",
+    rpcUrl: process.env.OPTIMISM_SEPOLIA_RPC_URL!,
+    chainId: 420n, // ExternalRouter chain ID
+    routerAddress: OptimismRouter,
+  },
+  eth: {
+    name: "Ethereum Sepolia",
+    rpcUrl: process.env.ETH_SEPOLIA_RPC_URL!,
+    chainId: 111n, // ExternalRouter chain ID
+    routerAddress: EthRouter,
+  },
+  zora: {
+    name: "Zora Sepolia",
+    rpcUrl: process.env.ZORA_SEPOLIA_RPC_URL!,
+    chainId: 9999n, // ExternalRouter chain ID
+    routerAddress: ZoraRouter,
+  },
+  worldchain: {
+    name: "Worldchain Sepolia",
+    rpcUrl: process.env.WORLDCHAIN_SEPOLIA_RPC_URL!,
+    chainId: 480n, // ExternalRouter chain ID
+    routerAddress: WorldchainRouter,
+  },
+  base: {
+    name: "Base Sepolia",
+    rpcUrl: process.env.BASE_SEPOLIA_RPC_URL!,
+    chainId: 845n, // ExternalRouter chain ID
+    routerAddress: BaseRouter,
+  },
+  ink: {
+    name: "Ink Sepolia",
+    rpcUrl: process.env.INK_SEPOLIA_RPC_URL!,
+    chainId: 763n, // ExternalRouter chain ID
+    routerAddress: InkRouter,
+  },
+  unichain: {
+    name: "Unichain Sepolia",
+    rpcUrl: process.env.UNICHAIN_SEPOLIA_RPC_URL!,
+    chainId: 130n, // ExternalRouter chain ID
+    routerAddress: UnichainRouter,
+  },
+  polygon: {
+    name: "Polygon Amoy",
+    rpcUrl: process.env.POLYGON_AMOY_RPC_URL!,
+    chainId: 800n, // ExternalRouter chain ID
+    routerAddress: PolygonRouter,
+  },
 } as const;
 
 class CrossChainRelayer {
@@ -119,25 +152,30 @@ class CrossChainRelayer {
   }
 
   private getDestinationChain(chainId: bigint): DestinationChain | null {
+    if (chainId === CHAIN_CONFIGS.eth.chainId) return "eth";
     if (chainId === CHAIN_CONFIGS.zora.chainId) return "zora";
-    if (chainId === CHAIN_CONFIGS.mode.chainId) return "mode";
+    if (chainId === CHAIN_CONFIGS.worldchain.chainId) return "worldchain";
+    if (chainId === CHAIN_CONFIGS.base.chainId) return "base";
+    if (chainId === CHAIN_CONFIGS.ink.chainId) return "ink";
+    if (chainId === CHAIN_CONFIGS.unichain.chainId) return "unichain";
+    if (chainId === CHAIN_CONFIGS.polygon.chainId) return "polygon";
     return null;
   }
 
   private async processQueuedMessages(): Promise<void> {
     console.log("\n📥 Processing queued messages...");
 
-    // Process Optimism → Zora/Mode messages
-    await this.processChainMessages("optimism", ["zora", "mode"]);
+    // Process Optimism → All other chains messages
+    await this.processChainMessages("optimism", ["eth", "zora", "worldchain", "base", "ink", "unichain", "polygon"]);
     
-    // Process Zora → Optimism messages
+    // Process messages from other chains → Optimism
+    await this.processChainMessages("eth", ["optimism"]);
     await this.processChainMessages("zora", ["optimism"]);
-    
-    // Process Mode → Optimism messages
-    await this.processChainMessages("mode", ["optimism"]);
-
-    // Process Eth → Optimism messages
-    // await this.processChainMessages("eth", ["optimism"]);
+    await this.processChainMessages("worldchain", ["optimism"]);
+    await this.processChainMessages("base", ["optimism"]);
+    await this.processChainMessages("ink", ["optimism"]);
+    await this.processChainMessages("unichain", ["optimism"]);
+    await this.processChainMessages("polygon", ["optimism"]);
   }    
 
   private async processChainMessages(
@@ -161,7 +199,7 @@ class CrossChainRelayer {
 
         try {
           if (sourceChain === "optimism") {
-            // Optimism → Zora/Mode routing
+            // Optimism → Other chains routing
             const targetChain = this.getDestinationChain(message[0]);
             
             if (!targetChain) {
@@ -173,7 +211,7 @@ class CrossChainRelayer {
 
             await this.routeMessage(message, sourceChain, targetChain, 0);
           } else {
-            // Zora/Mode → Optimism routing
+            // Other chains → Optimism routing
             await this.routeMessage(message, sourceChain, "optimism", 0);
           }
 
@@ -262,7 +300,7 @@ class CrossChainRelayer {
   private async setupEventListeners(): Promise<void> {
     console.log("👂 Setting up event listeners...");
 
-    // Optimism events → Zora/Mode
+    // Optimism events → Other chains
     this.routers.optimism.on("MessageSent", async (message: MessageData) => {
       try {
         console.log("🔴 Received message from Optimism:", message);
@@ -283,6 +321,21 @@ class CrossChainRelayer {
       }
     });
 
+    // Eth events → Optimism
+    this.routers.eth.on("MessageSent", async (message: MessageData) => {
+      try {
+        console.log("⚡ Received message from Eth:", message);
+        
+        await this.routeMessage(message, "eth", "optimism", 0);
+        // FIXED: Only pop after successful routing
+        await this.routers.eth.pop();
+        console.log("✅ Processed Eth message");
+      } catch (error) {
+        console.error("❌ Error processing Eth event:", error);
+        // FIXED: Don't pop on failure - message stays in queue for retry
+      }
+    });
+
     // Zora events → Optimism
     this.routers.zora.on("MessageSent", async (message: MessageData) => {
       try {
@@ -298,34 +351,80 @@ class CrossChainRelayer {
       }
     });
 
-    // Mode events → Optimism
-    this.routers.mode.on("MessageSent", async (message: MessageData) => {
+    // Worldchain events → Optimism
+    this.routers.worldchain.on("MessageSent", async (message: MessageData) => {
       try {
-        console.log("🌐 Received message from Mode:", message);
+        console.log("🌍 Received message from Worldchain:", message);
         
-        await this.routeMessage(message, "mode", "optimism", 0);
+        await this.routeMessage(message, "worldchain", "optimism", 0);
         // FIXED: Only pop after successful routing
-        await this.routers.mode.pop();
-        console.log("✅ Processed Mode message");
+        await this.routers.worldchain.pop();
+        console.log("✅ Processed Worldchain message");
       } catch (error) {
-        console.error("❌ Error processing Mode event:", error);
+        console.error("❌ Error processing Worldchain event:", error);
         // FIXED: Don't pop on failure - message stays in queue for retry
       }
     });
 
-    // Eth events → Optimism
-    // this.routers.eth.on("MessageSent", async (message: MessageData) => {
-    //   try {
-    //     console.log("🌐 Received message from Eth:", message);
+    // Base events → Optimism
+    this.routers.base.on("MessageSent", async (message: MessageData) => {
+      try {
+        console.log("🔵 Received message from Base:", message);
         
-    //     await this.routeMessage(message, "eth", "optimism");
-    
-    //     await this.routers.eth.pop();
-    //     console.log("✅ Processed Eth message");
-    //   } catch (error) {
-    //     console.error("❌ Error processing Eth event:", error);
-    //   }
-    // });
+        await this.routeMessage(message, "base", "optimism", 0);
+        // FIXED: Only pop after successful routing
+        await this.routers.base.pop();
+        console.log("✅ Processed Base message");
+      } catch (error) {
+        console.error("❌ Error processing Base event:", error);
+        // FIXED: Don't pop on failure - message stays in queue for retry
+      }
+    });
+
+    // Ink events → Optimism
+    this.routers.ink.on("MessageSent", async (message: MessageData) => {
+      try {
+        console.log("🖋️ Received message from Ink:", message);
+        
+        await this.routeMessage(message, "ink", "optimism", 0);
+        // FIXED: Only pop after successful routing
+        await this.routers.ink.pop();
+        console.log("✅ Processed Ink message");
+      } catch (error) {
+        console.error("❌ Error processing Ink event:", error);
+        // FIXED: Don't pop on failure - message stays in queue for retry
+      }
+    });
+
+    // Unichain events → Optimism
+    this.routers.unichain.on("MessageSent", async (message: MessageData) => {
+      try {
+        console.log("🦄 Received message from Unichain:", message);
+        
+        await this.routeMessage(message, "unichain", "optimism", 0);
+        // FIXED: Only pop after successful routing
+        await this.routers.unichain.pop();
+        console.log("✅ Processed Unichain message");
+      } catch (error) {
+        console.error("❌ Error processing Unichain event:", error);
+        // FIXED: Don't pop on failure - message stays in queue for retry
+      }
+    });
+
+    // Polygon events → Optimism
+    this.routers.polygon.on("MessageSent", async (message: MessageData) => {
+      try {
+        console.log("🔺 Received message from Polygon:", message);
+        
+        await this.routeMessage(message, "polygon", "optimism", 0);
+        // FIXED: Only pop after successful routing
+        await this.routers.polygon.pop();
+        console.log("✅ Processed Polygon message");
+      } catch (error) {
+        console.error("❌ Error processing Polygon event:", error);
+        // FIXED: Don't pop on failure - message stays in queue for retry
+      }
+    });
 
     console.log("✅ Event listeners configured");
   }
@@ -334,9 +433,13 @@ class CrossChainRelayer {
     console.log("🧹 Removing existing event listeners...");
     
     await this.routers.optimism.removeAllListeners();
+    await this.routers.eth.removeAllListeners();
     await this.routers.zora.removeAllListeners();
-    await this.routers.mode.removeAllListeners();
-    // await this.routers.eth.removeAllListeners();
+    await this.routers.worldchain.removeAllListeners();
+    await this.routers.base.removeAllListeners();
+    await this.routers.ink.removeAllListeners();
+    await this.routers.unichain.removeAllListeners();
+    await this.routers.polygon.removeAllListeners();
     console.log("✅ Event listeners removed");
   }
 
