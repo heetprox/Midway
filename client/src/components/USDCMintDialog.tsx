@@ -81,7 +81,7 @@ export default function USDCMintDialog({ className }: USDCMintDialogProps) {
     <div className={`h-full border-2 border-black w-full ${className}`}
       style={{
         padding: "clamp(0.75rem, 1vw, 1.5rem)",
-        boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)"
+          boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)"
       }}
     >
       <div className="flex flex-col gap-4 sm:gap-6">

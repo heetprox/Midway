@@ -56,12 +56,7 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
   const [amount, setAmount] = useState<number>(0);
   const [debouncedAmount] = useDebounce(amount, 500);
 
-  // Force connection to Optimism Sepolia if not connected to a supported chain
-  useEffect(() => {
-    if (chainId && !SUPPORTED_CHAINS.some(chain => chain.id === chainId)) {
-      switchChain?.({ chainId: DEFAULT_CHAIN.id });
-    }
-  }, [chainId, switchChain]);
+  // Note: Removed automatic chain switching to allow users to freely switch between supported chains
 
   // Read MidPay balance from core contract on Optimism Sepolia
   // Note: Must use REAL blockchain chain ID for wagmi contract reads
@@ -176,7 +171,7 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
             </span>
           </div>
           
-          <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 w-full sm:w-auto">
+          <div className="flex flex-row gap-2 sm:gap-4 w-full sm:w-auto">
             {/* Max button */}
             <button
               onClick={() => setAmount(maxWithdrawAmount)}

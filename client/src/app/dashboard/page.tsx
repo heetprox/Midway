@@ -79,10 +79,10 @@ const Dashboard = () => {
               </div>
               <button
                 onClick={handleDisconnect}
-                className="relative text-black cursor-pointer rounded-full border-2 hover:bg-[#181917]/5 transition-all duration-300 s-font overflow-hidden w-full sm:w-auto"
+                className="relative text-black cursor-pointer rounded-full border-2 hover:bg-[#181917]/5 transition-all duration-300 s-font overflow-hidden w-fit sm:w-auto"
                 style={{
-                  fontSize: "clamp(0.875rem, 2vw, 1rem)",
-                  padding: "clamp(0.75rem, 1vw, 1rem)",
+                  fontSize: "clamp(1.25rem, 2vw, 1rem)",
+                  padding: "clamp(0.75rem, 1vw, 1rem) clamp(1.5rem, 2vw, 1rem)",
                   boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)"
                 }}
               >

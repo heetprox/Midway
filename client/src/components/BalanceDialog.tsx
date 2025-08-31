@@ -24,12 +24,7 @@ export default function BalanceDialog() {
   const chainId = useChainId();
   const { switchChain } = useSwitchChain();
 
-  // Force connection to Optimism Sepolia if not connected to a supported chain
-  useEffect(() => {
-    if (chainId && !SUPPORTED_CHAINS.some(chain => chain.id === chainId)) {
-      switchChain?.({ chainId: DEFAULT_CHAIN.id });
-    }
-  }, [chainId, switchChain]);
+  // Note: Removed automatic chain switching to allow users to freely switch between supported chains
 
   // Read MidPay balance from core contract on Optimism Sepolia
   const {
@@ -96,7 +91,7 @@ export default function BalanceDialog() {
       <div className="flex gap-2 border-2 border-black flex-col w-full"
         style={{
           padding: "clamp(0.75rem, 1vw, 1.5rem)",
-          boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)"
+          boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)"
         }}
       >
         <div className="b-font" style={{ fontSize: "clamp(1.5rem, 4vw, 3rem)" }}>
@@ -113,7 +108,7 @@ export default function BalanceDialog() {
           </div>
         ) : (
           <div className="s-font" style={{ fontSize: "clamp(1.25rem, 3.5vw, 3rem)" }}>
-            🡢 {toFixed(MidPayCoreBalance as bigint)} USDC
+            🡢 {toFixed(MidPayCoreBalance as bigint)} FUSD
           </div>
         )}
       </div>
@@ -121,11 +116,11 @@ export default function BalanceDialog() {
       <div className="flex gap-2 border-2 border-black flex-col w-full"
         style={{
           padding: "clamp(0.75rem, 1vw, 1.5rem)",
-          boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)"
+            boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)"
         }}
       >
         <div className="b-font" style={{ fontSize: "clamp(1.5rem, 4vw, 3rem)" }}>
-          MINTED USDC
+          MINTED FUSD
         </div>
 
         {isWalletBalanceLoading ? (
@@ -138,7 +133,7 @@ export default function BalanceDialog() {
           </div>
         ) : (
           <div className="s-font" style={{ fontSize: "clamp(1.25rem, 3.5vw, 3rem)" }}>
-            🡢 {toFixed(walletBalance as bigint)} USDC
+            🡢 {toFixed(walletBalance as bigint)} FUSD
           </div>
         )}
       </div>
