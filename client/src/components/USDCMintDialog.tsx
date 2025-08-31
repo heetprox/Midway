@@ -121,7 +121,7 @@ export default function USDCMintDialog({ className }: USDCMintDialogProps) {
           </div>
         )}
         {isSuccess && (
-          <div className="text-green-600 mt-2 sm:mt-4 s-font" 
+          <div className="text-black mt-2 sm:mt-4 s-font" 
                style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)" }}>
             Successfully minted! Page will refresh shortly.
           </div>

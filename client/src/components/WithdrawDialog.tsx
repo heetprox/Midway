@@ -167,7 +167,7 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
                 boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)",
                 fontSize: "clamp(0.875rem, 2vw, 1rem)"
               }}
-              className="text-[#181917] bg-transparent border-2 rounded-full hover:bg-[#181917]/5 cursor-pointer transition-all duration-300 b-font disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+              className="text-[#181917] bg-transparent border-2 rounded-full hover:bg-[#181917]/5 cursor-pointer transition-all duration-300 b-font disabled:opacity-50 disabled:cursor-not-allowed aspect-square w-full sm:w-auto"
               disabled={isBalanceLoading || maxWithdrawAmount === 0}
             >
               Max
@@ -190,13 +190,13 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
 
         {/* Status messages */}
         {(isWithdrawLoading || isConfirming) && (
-          <div className="text-blue-600 mt-2 sm:mt-4 s-font" 
+          <div className="text-black mt-2 sm:mt-4 s-font" 
                style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)" }}>
             Confirm in your wallet...
           </div>
         )}
         {isWithdrawSuccess && (
-          <div className="text-green-600 mt-2 sm:mt-4 s-font" 
+          <div className="text-black mt-2 sm:mt-4 s-font" 
                style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)" }}>
             Withdrawal successful! Your balance will be updated soon.
           </div>

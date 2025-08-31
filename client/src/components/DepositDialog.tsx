@@ -179,13 +179,13 @@ export default function DepositDialog({ className }: DepositDialogProps) {
           </div>
         </div>
         {(isDepositLoading || isApproveLoading) && (
-          <div className="text-blue-600 mt-2 sm:mt-4 s-font" 
+          <div className="text-black mt-2 sm:mt-4 s-font" 
                style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)" }}>
             Confirm in your wallet...
           </div>
         )}
         {isDepositSuccess && (
-          <div className="text-green-600 mt-2 sm:mt-4 s-font" 
+          <div className="text-black mt-2 sm:mt-4 s-font" 
                style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)" }}>
             Deposit successful! Your balance will be updated soon.
           </div>
