@@ -6,52 +6,13 @@ import {
   zoraSepolia,
   baseSepolia,
   polygonAmoy,
+  worldchainSepolia,
+  inkSepolia,
+  unichainSepolia,
 } from "wagmi/chains";
 import { injected } from "wagmi/connectors";
 import { defineChain } from "viem";
 
-// Define custom chains that aren't available in wagmi/chains
-export const worldchainSepolia = defineChain({
-  id: 4801,
-  name: 'Worldchain Sepolia',
-  nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-  rpcUrls: {
-    default: { http: ['https://worldchain-sepolia.g.alchemy.com/v2/demo'] },
-    public: { http: ['https://worldchain-sepolia.g.alchemy.com/v2/demo'] },
-  },
-  blockExplorers: {
-    default: { name: 'Worldchain Explorer', url: 'https://worldchain-sepolia.blockscout.com' },
-  },
-  testnet: true,
-});
-
-export const inkSepolia = defineChain({
-  id: 763373,
-  name: 'Ink Sepolia',
-  nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-  rpcUrls: {
-    default: { http: ['https://rpc-gel-sepolia.inkonchain.com'] },
-    public: { http: ['https://rpc-gel-sepolia.inkonchain.com'] },
-  },
-  blockExplorers: {
-    default: { name: 'Ink Explorer', url: 'https://explorer-sepolia.inkonchain.com' },
-  },
-  testnet: true,
-});
-
-export const unichainSepolia = defineChain({
-  id: 1301,
-  name: 'Unichain Sepolia',
-  nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
-  rpcUrls: {
-    default: { http: ['https://sepolia.unichain.org'] },
-    public: { http: ['https://sepolia.unichain.org'] },
-  },
-  blockExplorers: {
-    default: { name: 'Unichain Explorer', url: 'https://sepolia.uniscan.xyz' },
-  },
-  testnet: true,
-});
 
 const chains = [
   optimismSepolia, 

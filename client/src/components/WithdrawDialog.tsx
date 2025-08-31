@@ -35,11 +35,11 @@ const SUPPORTED_CHAINS = [
   optimismSepolia, 
   ethSepolia, 
   zoraSepolia, 
-  worldchainSepolia, 
   baseSepolia, 
+  polygonAmoy,
+  worldchainSepolia, 
   inkSepolia, 
   unichainSepolia, 
-  polygonAmoy
 ] as const;
 const DEFAULT_CHAIN = optimismSepolia;
 
