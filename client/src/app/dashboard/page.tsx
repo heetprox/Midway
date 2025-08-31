@@ -1,5 +1,4 @@
 "use client";
-
 import React, { useState, useEffect } from 'react';
 import { useAccount, useDisconnect } from "wagmi";
 import { useRouter } from "next/navigation";
@@ -7,6 +6,7 @@ import BalanceDialog from "@/components/BalanceDialog";
 import DepositDialog from "@/components/DepositDialog";
 import WithdrawDialog from "@/components/WithdrawDialog";
 import USDCMintDialog from "@/components/USDCMintDialog";
+import ChainSelector from '@/components/ChainSelector';
 
 const Dashboard = () => {
   const { address, isConnected } = useAccount();
@@ -34,90 +34,96 @@ const Dashboard = () => {
   // Show loading during hydration or when not connected
   if (!isClient || !isConnected || !address) {
     return (
-      <div className="w-full flex flex-col justify-center items-center h-[100vh] min-h-screen bg-[#FEFBEC]">
-        <div className="b-font text-2xl">Loading...</div>
+      <div className="w-full flex flex-col justify-center items-center h-screen bg-[#FEFBEC]">
+        <div className="relative">
+          <div className="w-16 h-16 border-2 border-[#181917]/20 border-t-[#181917] rounded-full animate-spin"></div>
+        </div>
+        <div className="b-font text-2xl text-[#181917] mt-6 animate-pulse">Loading Dashboard...</div>
       </div>
     );
   }
 
   return (
-    <div 
-      className="w-full min-h-screen h-full bg-[#FEFBEC]"
-      style={{
-        padding: "clamp(1.25rem, 2vw, 2rem)", // Fixed the 200rem typo
-      }}
+    <div className="w-full min-h-screen h-[135vh] bg-[#FEFBEC] relative"
     >
-      {/* Header */}
-      <div className="flex justify-between items-center mb-8">
-        <div 
-          className="b-font leading-none"
-          style={{
-            fontSize: "clamp(2rem, 8vw, 4rem)", // Fixed the 200rem typo
-          }}
-        >
-          Midway Dashboard
-        </div>
-        <button
-          onClick={handleDisconnect}
-          className="bg-[#181917] text-[#FEFBEC] px-6 py-3 rounded-full hover:bg-[#181917]/80 transition-all duration-300 b-font"
-          style={{
-            fontSize: "clamp(0.875rem, 1.5vw, 1rem)", // Fixed the 200rem typo
-          }}
-        >
-          Disconnect Wallet
-        </button>
+      {/* Background Pattern */}
+      <div className="absolute inset-0 opacity-5">
+        <div className="absolute top-10 left-10 w-32 h-32 rounded-full bg-[#181917] blur-3xl"></div>
+        <div className="absolute top-40 right-20 w-24 h-24 rounded-full bg-[#181917] blur-2xl"></div>
+        <div className="absolute bottom-20 left-1/3 w-40 h-40 rounded-full bg-[#181917] blur-3xl"></div>
       </div>
 
-      {/* Wallet Address Display */}
-      <div className="mb-8 text-center">
-        <div className="s-font text-lg mb-2">Connected Wallet</div>
-        <div className="bg-[#181917]/10 rounded-lg p-4 inline-block">
-          <code className="text-sm font-mono">{address}</code>
-        </div>
-      </div>
-
-      {/* Main Content Grid */}
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 max-w-7xl mx-auto">
-        {/* Left Column */}
-        <div className="space-y-8">
-          {/* Balance Display */}
-          <div className="flex justify-center">
-            <BalanceDialog />
+      <div className="relative w-full items-center flex flex-col gap-6 h-full z-10" style={{ padding: "clamp(1rem, 2vw, 2rem)" }}>
+        {/* Header */}
+        <div className="flex justify-between h-fit w-[95%] md:w-[60%] lg:w-[50%] xl:w-[45%] 2xl:w-[40%] items-center ">
+          <div className="group">
+            <div
+              className="b-font leading-none text-[#181917] transition-all duration-500 group-hover:text-[#181917]/80"
+              style={{ fontSize: "clamp(2rem, 8vw, 4rem)" }}
+            >
+              Midway
+            </div>
           </div>
 
-          {/* USDC Mint Dialog */}
-          <div className="flex justify-center">
-            <USDCMintDialog />
+
+        </div>
+
+
+        {/* Main Content Grid */}
+        <div className="flex flex-col w-[95%] md:w-[60%] lg:w-[50%] xl:w-[45%] 2xl:w-[40%] h-full gap-4 sm:gap-6 mx-auto">
+          {/* Left Column */}
+          <div className="w-full h-full flex flex-col gap-4 sm:gap-6">
+            <div className="flex flex-col sm:flex-row w-full h-fit gap-2 sm:gap-4 justify-start">
+              <div className="w-fit h-full">
+                <ChainSelector />
+              </div>
+              <button
+                onClick={handleDisconnect}
+                className="relative text-black cursor-pointer rounded-full border-2 hover:bg-[#181917]/5 transition-all duration-300 s-font overflow-hidden w-fit sm:w-auto"
+                style={{
+                  fontSize: "clamp(1.25rem, 2vw, 1rem)",
+                  padding: "clamp(0.75rem, 1vw, 1rem) clamp(1.5rem, 2vw, 1rem)",
+                  boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)"
+                }}
+              >
+                <span className="relative z-10">Disconnect Wallet</span>
+              </button>
+            </div>
+            <div className="flex w-full h-fit justify-center">
+              <div className="w-full h-full">
+                <BalanceDialog />
+              </div>
+            </div>
+
+            {/* USDC Mint Dialog */}
+            <div className="flex justify-center h-fit">
+              <div className="w-full h-full">
+                <USDCMintDialog />
+              </div>
+            </div>
+          </div>
+
+          {/* Right Column */}
+          <div className="w-full flex flex-col gap-4 sm:gap-6">
+            {/* Deposit Dialog */}
+
+
+            <div className="flex w-full justify-center">
+              <div className="w-full">
+                <DepositDialog />
+              </div>
+            </div>
+
+            {/* Withdraw Dialog */}
+            <div className="flex w-full justify-center">
+              <div className="w-full">
+                <WithdrawDialog />
+              </div>
+            </div>
           </div>
         </div>
 
-        {/* Right Column */}
-        <div className="space-y-8">
-          {/* Deposit Dialog */}
-          <div className="flex justify-center">
-            <DepositDialog />
-          </div>
 
-          {/* Withdraw Dialog */}
-          <div className="flex justify-center">
-            <WithdrawDialog />
-          </div>
-        </div>
-      </div>
-
-      {/* Footer */}
-      <div className="mt-16 text-center">
-        <div 
-          className="s-font leading-none mb-4"
-          style={{
-            fontSize: "clamp(1rem, 1.5vw, 1.25rem)", // Fixed the 200rem typo
-          }}
-        >
-          Deposit Once, Pay Anywhere
-        </div>
-        <div className="text-sm text-[#181917]/60">
-          Manage your cross-chain USDC deposits and withdrawals
-        </div>
       </div>
     </div>
   );

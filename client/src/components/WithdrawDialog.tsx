@@ -13,7 +13,16 @@ import {
   useSwitchChain,
 } from "wagmi";
 import { Address, formatUnits, parseUnits } from "viem";
-import { optimismSepolia, sepolia as ethSepolia, zoraSepolia, modeTestnet as modeSepolia } from "wagmi/chains";
+import { 
+  optimismSepolia, 
+  sepolia as ethSepolia, 
+  zoraSepolia, 
+  baseSepolia, 
+  polygonAmoy,
+  worldchainSepolia,
+  inkSepolia,
+  unichainSepolia,
+} from "wagmi/chains";
 import MidPayCore from "../abi/MidPayCore.json";
 import MidPayClient from "../abi/MidPayClient.json";
 import { toBigInt, toNumber } from "../utils/bigIntHelpers";
@@ -22,7 +31,16 @@ import { OptimismCore } from "@/context/constants";
 import { getMidPayAddress } from "@/utils/addressHelpers";
 
 // Define supported chains using real blockchain chain IDs
-const SUPPORTED_CHAINS = [optimismSepolia, ethSepolia, zoraSepolia, modeSepolia] as const;
+const SUPPORTED_CHAINS = [
+  optimismSepolia, 
+  ethSepolia, 
+  zoraSepolia, 
+  baseSepolia, 
+  polygonAmoy,
+  worldchainSepolia, 
+  inkSepolia, 
+  unichainSepolia, 
+] as const;
 const DEFAULT_CHAIN = optimismSepolia;
 
 interface WithdrawDialogProps {
@@ -38,12 +56,7 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
   const [amount, setAmount] = useState<number>(0);
   const [debouncedAmount] = useDebounce(amount, 500);
 
-  // Force connection to Optimism Sepolia if not connected to a supported chain
-  useEffect(() => {
-    if (chainId && !SUPPORTED_CHAINS.some(chain => chain.id === chainId)) {
-      switchChain?.({ chainId: DEFAULT_CHAIN.id });
-    }
-  }, [chainId, switchChain]);
+  // Note: Removed automatic chain switching to allow users to freely switch between supported chains
 
   // Read MidPay balance from core contract on Optimism Sepolia
   // Note: Must use REAL blockchain chain ID for wagmi contract reads
@@ -114,91 +127,112 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
   const isWithdrawDisabled = !isAmountValid || isWithdrawLoading || isConfirming;
 
   return (
-    <div className={`bg-white rounded-lg shadow-xl p-6 w-fit ${className}`}>
-      <div className="mb-6">
-        <h2 className="b-font text-xl mb-4">Select a chain</h2>
-        <ChainSelector />
-      </div>
-      
-      <div className="border-t border-[#181917]/20 my-6" />
-      
-      <div className="mb-6">
-        <h2 className="b-font text-xl mb-4">Amount</h2>
+    <div className={`border-2 border-black shadow-xl w-full ${className}`}
+      style={{
+        padding: "clamp(1rem, 1vw, 200rem)",
+        boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
+      }}
+    >
+            <div className="flex flex-col gap-2">
+        <h2 className="b-font mb-4" style={{ fontSize: "clamp(1.5rem, 4vw, 3rem)" }}>Withdraw Amount</h2>
         
         {/* Balance display */}
-        <div className="text-sm text-gray-600 mb-2 s-font">
+        <div className="text-gray-600 mb-2 s-font" style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)" }}>
           Available balance: {isBalanceLoading 
             ? "Loading..." 
             : balanceError 
               ? "Error loading balance"
-              : `${maxWithdrawAmount.toFixed(2)} USDC`
+              : `${maxWithdrawAmount.toFixed(2)} FUSD`
           }
         </div>
         
-        <div className="flex flex-row gap-1">
-          <input
-            className="text-right outline-none border-none bg-inherit text-3xl font-bold inline-flex items-center w-32"
-            placeholder="0.00"
-            type="number"
-            inputMode="numeric"
-            step="0.01"
-            min="0"
-            max={maxWithdrawAmount}
-            value={amount || ''}
-            onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
-          />
-          <span className="inline-flex items-center">USDC</span>
-          
-          {/* Max button */}
-          <button
-            onClick={() => setAmount(maxWithdrawAmount)}
-            className="border border-[#181917] text-[#181917] px-4 py-2 rounded-full hover:bg-[#181917] hover:text-[#FEFBEC] transition-all duration-300 b-font ml-2 disabled:opacity-50 disabled:cursor-not-allowed"
-            disabled={isBalanceLoading || maxWithdrawAmount === 0}
+        <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 lg:gap-6">
+          <div className="flex border-2 border-black flex-row gap-1 w-full sm:w-auto"
+            style={{
+              padding: "clamp(0.5rem, 1vw, 1rem)",
+              boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)"
+            }}
           >
-            Max
-          </button>
+            <input
+              className="text-left outline-none bg-inherit font-bold s-font leading-none inline-flex items-center flex-1 min-w-0"
+              style={{ fontSize: "clamp(1.25rem, 3vw, 3rem)" }}
+              placeholder="0.00"
+              type="number"
+              inputMode="numeric"
+              step="0.01"
+              min="0"
+              max={maxWithdrawAmount}
+              value={amount || ''}
+              onChange={(e) => setAmount(parseFloat(e.target.value) || 0)}
+            />
+            <span className="inline-flex s-font leading-none items-center whitespace-nowrap" 
+                  style={{ fontSize: "clamp(1rem, 2.5vw, 1.25rem)" }}>
+              FUSD
+            </span>
+          </div>
           
-          <button
-            onClick={handleWithdraw}
-            disabled={isWithdrawDisabled}
-            className="bg-[#181917] text-[#FEFBEC] px-6 py-3 rounded-full hover:bg-[#181917]/80 transition-all duration-300 b-font ml-8 disabled:opacity-50 disabled:cursor-not-allowed"
-          >
-            {isWithdrawLoading || isConfirming ? "Processing..." : "Withdraw"}
-          </button>
+          <div className="flex sm:flex-row gap-2 sm:gap-4 w-full sm:w-auto">
+            {/* Max button */}
+            <button
+              onClick={() => setAmount(maxWithdrawAmount)}
+              style={{
+                padding: "clamp(0.5rem, 1vw, 1rem)",
+                boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)",
+                fontSize: "clamp(0.875rem, 2vw, 1rem)"
+              }}
+              className="text-[#181917] bg-transparent border-2 rounded-full hover:bg-[#181917]/5 cursor-pointer transition-all duration-300 b-font disabled:opacity-50 disabled:cursor-not-allowed aspect-square w-full sm:w-auto"
+              disabled={isBalanceLoading || maxWithdrawAmount === 0}
+            >
+              Max
+            </button>
+            
+            <button
+              onClick={handleWithdraw}
+              disabled={isWithdrawDisabled}
+              style={{
+                padding: "clamp(0.5rem, 1vw, 1rem)",
+                boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)",
+                fontSize: "clamp(0.875rem, 2vw, 1rem)"
+              }}
+              className="text-[#181917] bg-transparent border-2 rounded-full hover:bg-[#181917]/5 cursor-pointer transition-all duration-300 b-font disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+            >
+              {isWithdrawLoading || isConfirming ? "Processing..." : "Withdraw"}
+            </button>
+          </div>
         </div>
 
         {/* Status messages */}
         {(isWithdrawLoading || isConfirming) && (
-          <div className="text-blue-600 mt-4 s-font">
-            {isWithdrawLoading 
-              ? "Confirm in your wallet..." 
-              : "Confirming transaction..."
-            }
+          <div className="text-black mt-2 sm:mt-4 s-font" 
+               style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)" }}>
+            Confirm in your wallet...
           </div>
         )}
-        
         {isWithdrawSuccess && (
-          <div className="text-green-600 max-w-xs mt-4 s-font">
-            Withdrawal successful! Your tokens will arrive at your wallet soon.
-            Refreshing page in 5 seconds...
+          <div className="text-black mt-2 sm:mt-4 s-font" 
+               style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)" }}>
+            Withdrawal successful! Your balance will be updated soon.
           </div>
         )}
         
         {withdrawError && (
-          <div className="text-red-600 max-w-xs mt-4 s-font">
+          <div className="text-red-600 mt-2 sm:mt-4 s-font" 
+               style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)" }}>
             Withdrawal failed: {withdrawError.message}
           </div>
         )}
         
         {balanceError && (
-          <div className="text-orange-600 text-sm mt-4 s-font">
+          <div className="text-orange-600 mt-2 sm:mt-4 s-font" 
+               style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)" }}>
             Unable to load balance. Please check your connection.
           </div>
         )}
 
         {/* Amount validation */}
         {amount > 0 && amount > maxWithdrawAmount && (
-          <div className="text-orange-600 text-sm mt-4 s-font">
+          <div className="text-orange-600 mt-2 sm:mt-4 s-font" 
+               style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)" }}>
             Amount exceeds available balance
           </div>
         )}

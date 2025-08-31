@@ -4,7 +4,7 @@
 import RoundButton from "@/components/RoundButton";
 import Image from "next/image";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
-import { useRouter } from "next/navigation";
+import { redirect, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
 
@@ -13,6 +13,13 @@ const Home = () => {
   const { connect, connectors } = useConnect();
   const { disconnect } = useDisconnect();
   const router = useRouter();
+
+  const handleConnect = () => {
+    connect({ connector: connectors[0] });
+    if (isConnected && address) {
+      redirect('/dashboard');
+    }
+  }
 
   // Redirect to dashboard when wallet connects
   useEffect(() => {
@@ -31,7 +38,7 @@ const Home = () => {
           style={{
             padding: "0 clamp(1.25rem, 2vw, 200rem)",
           }}
-          onClick={() => connect({ connector: connectors[0] })}
+          onClick={handleConnect}
         >
           <RoundButton text1="Connect" className="-20" text2="Wallet" link="/" />
         </div>

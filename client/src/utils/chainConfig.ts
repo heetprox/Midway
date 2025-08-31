@@ -3,13 +3,27 @@ import { createConfig } from "wagmi";
 import {
   optimismSepolia,
   sepolia as ethSepolia,
-  modeTestnet as modeSepolia,
   zoraSepolia,
+  baseSepolia,
+  polygonAmoy,
+  worldchainSepolia,
+  inkSepolia,
+  unichainSepolia,
 } from "wagmi/chains";
 import { injected } from "wagmi/connectors";
+import { defineChain } from "viem";
 
-// Define chains with real blockchain chain IDs for proper network switching
-const chains = [optimismSepolia, ethSepolia, modeSepolia, zoraSepolia] as const;
+
+const chains = [
+  optimismSepolia, 
+  ethSepolia, 
+  zoraSepolia, 
+  baseSepolia, 
+  polygonAmoy,
+  worldchainSepolia, 
+  inkSepolia, 
+  unichainSepolia, 
+] as const;
 
 // Create public client for Optimism Sepolia
 export const publicClient = createPublicClient({
@@ -38,7 +52,11 @@ export const config = createConfig({
   transports: {
     [optimismSepolia.id]: http(),
     [ethSepolia.id]: http(),
-    [modeSepolia.id]: http(),
     [zoraSepolia.id]: http(),
+    [baseSepolia.id]: http(),
+    [polygonAmoy.id]: http(),
+    [worldchainSepolia.id]: http(),
+    [inkSepolia.id]: http(),
+    [unichainSepolia.id]: http(),
   },
 });

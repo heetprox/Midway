@@ -1,14 +1,14 @@
 'use client';
 
 import { useEffect } from "react";
-import { 
-  useAccount, 
-  useReadContract, 
+import {
+  useAccount,
+  useReadContract,
   useChainId,
-  useSwitchChain 
+  useSwitchChain
 } from "wagmi";
 import { Address } from "viem";
-import { optimismSepolia, sepolia as ethSepolia, zoraSepolia , modeTestnet as modeSepolia } from "wagmi/chains";
+import { optimismSepolia, sepolia as ethSepolia, zoraSepolia, modeTestnet as modeSepolia } from "wagmi/chains";
 import MidPayCore from "../abi/MidPayCore.json";
 import fakeUSDC from "../abi/FakeUSDC.json";
 import { toFixed } from "../utils/bigIntHelpers";
@@ -24,15 +24,9 @@ export default function BalanceDialog() {
   const chainId = useChainId();
   const { switchChain } = useSwitchChain();
 
-  // Force connection to Optimism Sepolia if not connected to a supported chain
-  useEffect(() => {
-    if (chainId && !SUPPORTED_CHAINS.some(chain => chain.id === chainId)) {
-      switchChain?.({ chainId: DEFAULT_CHAIN.id });
-    }
-  }, [chainId, switchChain]);
+  // Note: Removed automatic chain switching to allow users to freely switch between supported chains
 
   // Read MidPay balance from core contract on Optimism Sepolia
-  // Note: Must use REAL blockchain chain ID for wagmi contract reads
   const {
     data: MidPayCoreBalance,
     isLoading: isMidPayCoreBalanceLoading,
@@ -40,12 +34,12 @@ export default function BalanceDialog() {
   } = useReadContract({
     address: OptimismCore as Address,
     abi: MidPayCore.abi,
-    chainId: optimismSepolia.id, // Use REAL Optimism Sepolia chain ID (11155420)
+    chainId: optimismSepolia.id,
     functionName: "balances",
     args: [address as Address],
     query: {
       enabled: !!address,
-      refetchInterval: 30000, // Refresh every 30 seconds
+      refetchInterval: 30000,
     },
   });
 
@@ -62,7 +56,7 @@ export default function BalanceDialog() {
     args: [address as Address],
     query: {
       enabled: !!address && !!chainId && !!getUsdcAddress(chainId),
-      refetchInterval: 30000, // Refresh every 30 seconds
+      refetchInterval: 30000,
     },
   });
 
@@ -71,83 +65,81 @@ export default function BalanceDialog() {
   const chainName = currentChain?.name || 'Unknown Chain';
 
   return (
-    <div className="bg-white rounded-lg shadow-xl p-6 w-96">
-      {/* MidPay Balance Section */}
-      <div className="mb-6">
-        <h2 className="b-font text-xl text-[#181917] mb-4">Your MidPay Balance</h2>
-        <p className="flex justify-center align-middle gap-1">
-          <span className="text-3xl font-bold inline-flex items-center">
-            {isMidPayCoreBalanceLoading
-              ? "Loading..."
-              : coreBalanceError
-              ? "Error"
-              : toFixed(MidPayCoreBalance as bigint)}
-          </span>
-          <span className="inline-flex items-center">USDC</span>
-        </p>
-        
-        {/* Error message for core balance */}
-        {coreBalanceError && (
-          <div className="text-red-600 text-sm text-center mt-2 s-font">
-            Unable to load MidPay balance
-          </div>
-        )}
-      </div>
-
-      <div className="border-t border-[#181917]/20 my-6"></div>
-
-      {/* Wallet Balance Section */}
-      <div className="mb-6">
-        <h2 className="b-font text-xl text-[#181917] mb-4">
-          Your Wallet Balance
-          <span className="text-sm font-normal text-gray-500 s-font">
-            ({chainName})
-          </span>
-        </h2>
-        <p className="flex justify-center align-middle gap-1">
-          <span className="text-3xl font-bold inline-flex items-center">
-            {isWalletBalanceLoading
-              ? "Loading..."
-              : walletBalanceError
-              ? "Error"
-              : toFixed(walletBalance as bigint)}
-          </span>
-          <span className="inline-flex items-center">USDC</span>
-        </p>
-
-        {/* Error message for wallet balance */}
-        {walletBalanceError && (
-          <div className="text-red-600 text-sm text-center mt-2 s-font">
-            Unable to load wallet balance
-            {!getUsdcAddress(chainId) && (
-              <div className="text-xs mt-1">
-                USDC not supported on this chain
-              </div>
-            )}
-          </div>
-        )}
-
-        {/* Chain switching hint */}
-        {chainId && !SUPPORTED_CHAINS.some(chain => chain.id === chainId) && (
-          <div className="text-orange-600 text-sm text-center mt-2 s-font">
-            Please switch to a supported network
-          </div>
-        )}
-      </div>
-
-      {/* Connection status */}
-      {!address && (
-        <div className="pt-0">
-          <div className="text-orange-600 text-sm text-center s-font">
-            Please connect your wallet to view balances
-          </div>
+    <div className="w-full flex flex-col gap-4 sm:gap-6 s-font h-full rounded-2xl">
+      <div className="flex  sm:flex-row gap-2 sm:gap-4">
+        <div className="text-black w-fit leading-none border-2 border-black rounded-full"
+          style={{
+            padding: "clamp(0.5rem, 1vw, 1rem)",
+            boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)",
+            fontSize: "clamp(1rem, 2.5vw, 1.25rem)"
+          }}
+        >
+          Your Wallet
         </div>
-      )}
-
-      {/* Refresh indicator */}
-      <div className="text-xs text-gray-400 text-center mt-4 s-font">
-        Balances update every 30 seconds
+        <div className="text-black w-fit leading-none border-2 border-black rounded-full"
+          style={{
+            padding: "clamp(0.5rem, 1vw, 1rem)",
+            boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)",
+            fontSize: "clamp(1rem, 2vw, 1.25rem)"
+          }}
+        >
+          [address] : {address?.slice(0, 6) + "..." + address?.slice(-4)}
+        </div>
       </div>
+
+
+      <div className="flex gap-2 border-2 border-black flex-col w-full"
+        style={{
+          padding: "clamp(0.75rem, 1vw, 1.5rem)",
+          boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)"
+        }}
+      >
+        <div className="b-font" style={{ fontSize: "clamp(1.5rem, 4vw, 3rem)" }}>
+          CORE BALANCE
+        </div>
+
+        {isMidPayCoreBalanceLoading ? (
+          <div className="b-font" style={{ fontSize: "clamp(1.25rem, 3.5vw, 3rem)" }}>
+            🡢 Loading...
+          </div>
+        ) : coreBalanceError ? (
+          <div className="s-font" style={{ fontSize: "clamp(1.25rem, 3.5vw, 3rem)" }}>
+            🡢 Error
+          </div>
+        ) : (
+          <div className="s-font" style={{ fontSize: "clamp(1.25rem, 3.5vw, 3rem)" }}>
+            🡢 {toFixed(MidPayCoreBalance as bigint)} FUSD
+          </div>
+        )}
+      </div>
+
+      <div className="flex gap-2 border-2 border-black flex-col w-full"
+        style={{
+          padding: "clamp(0.75rem, 1vw, 1.5rem)",
+            boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)"
+        }}
+      >
+        <div className="b-font" style={{ fontSize: "clamp(1.5rem, 4vw, 3rem)" }}>
+          MINTED FUSD
+        </div>
+
+        {isWalletBalanceLoading ? (
+          <div className="s-font" style={{ fontSize: "clamp(1.25rem, 3.5vw, 3rem)" }}>
+            🡢 Loading...
+          </div>
+        ) : walletBalanceError ? (
+          <div className="s-font" style={{ fontSize: "clamp(1.25rem, 3.5vw, 3rem)" }}>
+            🡢 Error
+          </div>
+        ) : (
+          <div className="s-font" style={{ fontSize: "clamp(1.25rem, 3.5vw, 3rem)" }}>
+            🡢 {toFixed(walletBalance as bigint)} FUSD
+          </div>
+        )}
+      </div>
+
+
+
     </div>
   );
 }
