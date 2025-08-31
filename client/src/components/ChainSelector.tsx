@@ -4,9 +4,11 @@ import { useChainId, useSwitchChain } from "wagmi";
 import {
   optimismSepolia,
   sepolia as ethSepolia,
-  modeTestnet as modeSepolia,
   zoraSepolia,
+  baseSepolia,
+  polygonAmoy,
 } from "wagmi/chains";
+import { worldchainSepolia, inkSepolia, unichainSepolia } from "../utils/chainConfig";
 
 interface ChainSelectorProps {
   className?: string;
@@ -19,11 +21,15 @@ const ChainSelector = ({ className }: ChainSelectorProps) => {
   const chainList = [
     { name: "Optimism Sepolia", id: optimismSepolia.id, key: "Optimism" },
     { name: "Ethereum Sepolia", id: ethSepolia.id, key: "Ethereum" },
-    { name: "Mode Sepolia", id: modeSepolia.id, key: "Mode" },
     { name: "Zora Sepolia", id: zoraSepolia.id, key: "Zora" },
+    { name: "Worldchain Sepolia", id: worldchainSepolia.id, key: "Worldchain" },
+    { name: "Base Sepolia", id: baseSepolia.id, key: "Base" },
+    { name: "Ink Sepolia", id: inkSepolia.id, key: "Ink" },
+    { name: "Unichain Sepolia", id: unichainSepolia.id, key: "Unichain" },
+    { name: "Polygon Amoy", id: polygonAmoy.id, key: "Polygon" },
   ] as const;
 
-  function switchToChain(chainKey: "Optimism" | "Ethereum" | "Mode" | "Zora") {
+  function switchToChain(chainKey: "Optimism" | "Ethereum" | "Zora" | "Worldchain" | "Base" | "Ink" | "Unichain" | "Polygon") {
     const targetChain = chainList.find((c) => c.key === chainKey);
     if (targetChain && switchChain) {
       switchChain({ chainId: targetChain.id });
@@ -65,7 +71,7 @@ const ChainSelector = ({ className }: ChainSelectorProps) => {
         onChange={(e) => {
           const selectedChain = chainList.find((c) => c.name === e.target.value);
           if (selectedChain) {
-            const chainKey = selectedChain.key as "Optimism" | "Ethereum" | "Mode" | "Zora";
+            const chainKey = selectedChain.key as "Optimism" | "Ethereum" | "Zora" | "Worldchain" | "Base" | "Ink" | "Unichain" | "Polygon";
             switchToChain(chainKey);
           }
         }}

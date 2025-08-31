@@ -13,7 +13,14 @@ import {
   useSwitchChain,
 } from "wagmi";
 import { Address, formatUnits, parseUnits } from "viem";
-import { optimismSepolia, sepolia as ethSepolia, zoraSepolia, modeTestnet as modeSepolia } from "wagmi/chains";
+import { 
+  optimismSepolia, 
+  sepolia as ethSepolia, 
+  zoraSepolia, 
+  baseSepolia, 
+  polygonAmoy 
+} from "wagmi/chains";
+import { worldchainSepolia, inkSepolia, unichainSepolia } from "../utils/chainConfig";
 import MidPayCore from "../abi/MidPayCore.json";
 import MidPayClient from "../abi/MidPayClient.json";
 import { toBigInt, toNumber } from "../utils/bigIntHelpers";
@@ -22,7 +29,16 @@ import { OptimismCore } from "@/context/constants";
 import { getMidPayAddress } from "@/utils/addressHelpers";
 
 // Define supported chains using real blockchain chain IDs
-const SUPPORTED_CHAINS = [optimismSepolia, ethSepolia, zoraSepolia, modeSepolia] as const;
+const SUPPORTED_CHAINS = [
+  optimismSepolia, 
+  ethSepolia, 
+  zoraSepolia, 
+  worldchainSepolia, 
+  baseSepolia, 
+  inkSepolia, 
+  unichainSepolia, 
+  polygonAmoy
+] as const;
 const DEFAULT_CHAIN = optimismSepolia;
 
 interface WithdrawDialogProps {
