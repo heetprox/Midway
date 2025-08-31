@@ -114,7 +114,7 @@ export default function DepositDialog({ className }: DepositDialogProps) {
   };
 
   return (
-    <div className={`border-4 flex flex-col gap-6 border-black shadow-xl w-full ${className}`}
+    <div className={`border-2 flex flex-col gap-6 border-black shadow-xl w-full ${className}`}
       style={{
         padding: "clamp(1rem, 1vw, 200rem)",
         boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
@@ -125,7 +125,7 @@ export default function DepositDialog({ className }: DepositDialogProps) {
       <div className="flex flex-col gap-2">
         <h2 className="b-font mb-4" style={{ fontSize: "clamp(1.5rem, 4vw, 3rem)" }}>Deposit Amount</h2>
         <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 lg:gap-6">
-          <div className="flex border-4 border-black flex-row gap-1 w-full sm:w-auto"
+          <div className="flex border-2 border-black flex-row gap-1 w-full sm:w-auto"
             style={{
               padding: "clamp(0.5rem, 1vw, 1rem)",
               boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)"
@@ -155,7 +155,7 @@ export default function DepositDialog({ className }: DepositDialogProps) {
                   boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)",
                   fontSize: "clamp(0.875rem, 2vw, 1rem)"
                 }}
-                className="text-[#181917] bg-transparent border-4 rounded-full hover:bg-[#181917]/5 cursor-pointer transition-all duration-300 b-font disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+                className="text-[#181917] bg-transparent border-2 rounded-full hover:bg-[#181917]/5 cursor-pointer transition-all duration-300 b-font disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
                 disabled={isApproveLoading || !address}
                 onClick={handleApprove}
               >
@@ -169,7 +169,7 @@ export default function DepositDialog({ className }: DepositDialogProps) {
                   boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)",
                   fontSize: "clamp(0.875rem, 2vw, 1rem)"
                 }}
-                className="text-[#181917] bg-transparent border-4 rounded-full hover:bg-[#181917]/5 cursor-pointer transition-all duration-300 b-font disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+                className="text-[#181917] bg-transparent border-2 rounded-full hover:bg-[#181917]/5 cursor-pointer transition-all duration-300 b-font disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
                 disabled={isAllowanceLoading || !address || isDepositLoading}
                 onClick={handleDeposit}
               >

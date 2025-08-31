@@ -93,7 +93,7 @@ export default function BalanceDialog() {
       </div>
 
 
-      <div className="flex gap-2 border-4 border-black flex-col w-full"
+      <div className="flex gap-2 border-2 border-black flex-col w-full"
         style={{
           padding: "clamp(0.75rem, 1vw, 1.5rem)",
           boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)"
@@ -118,7 +118,7 @@ export default function BalanceDialog() {
         )}
       </div>
 
-      <div className="flex gap-2 border-4 border-black flex-col w-full"
+      <div className="flex gap-2 border-2 border-black flex-col w-full"
         style={{
           padding: "clamp(0.75rem, 1vw, 1.5rem)",
           boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)"

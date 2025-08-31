@@ -114,7 +114,7 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
   const isWithdrawDisabled = !isAmountValid || isWithdrawLoading || isConfirming;
 
   return (
-    <div className={`border-4 border-black shadow-xl w-full ${className}`}
+    <div className={`border-2 border-black shadow-xl w-full ${className}`}
       style={{
         padding: "clamp(1rem, 1vw, 200rem)",
         boxShadow: "10px 10px 1px rgba(0, 0, 0, 1)" // right + bottom only
@@ -134,7 +134,7 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
         </div>
         
         <div className="flex flex-col sm:flex-row gap-2 sm:gap-4 lg:gap-6">
-          <div className="flex border-4 border-black flex-row gap-1 w-full sm:w-auto"
+          <div className="flex border-2 border-black flex-row gap-1 w-full sm:w-auto"
             style={{
               padding: "clamp(0.5rem, 1vw, 1rem)",
               boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)"
@@ -167,7 +167,7 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
                 boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)",
                 fontSize: "clamp(0.875rem, 2vw, 1rem)"
               }}
-              className="text-[#181917] bg-transparent border-4 rounded-full hover:bg-[#181917]/5 cursor-pointer transition-all duration-300 b-font disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+              className="text-[#181917] bg-transparent border-2 rounded-full hover:bg-[#181917]/5 cursor-pointer transition-all duration-300 b-font disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
               disabled={isBalanceLoading || maxWithdrawAmount === 0}
             >
               Max
@@ -181,7 +181,7 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
                 boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)",
                 fontSize: "clamp(0.875rem, 2vw, 1rem)"
               }}
-              className="text-[#181917] bg-transparent border-4 rounded-full hover:bg-[#181917]/5 cursor-pointer transition-all duration-300 b-font disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+              className="text-[#181917] bg-transparent border-2 rounded-full hover:bg-[#181917]/5 cursor-pointer transition-all duration-300 b-font disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
             >
               {isWithdrawLoading || isConfirming ? "Processing..." : "Withdraw"}
             </button>

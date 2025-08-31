@@ -78,7 +78,7 @@ export default function USDCMintDialog({ className }: USDCMintDialogProps) {
   }
 
   return (
-    <div className={`h-full border-4 border-black w-full ${className}`}
+    <div className={`h-full border-2 border-black w-full ${className}`}
       style={{
         padding: "clamp(0.75rem, 1vw, 1.5rem)",
         boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)"
@@ -95,7 +95,7 @@ export default function USDCMintDialog({ className }: USDCMintDialogProps) {
             Mint test USDC tokens to use with the deposit feature.
           </p>
           <button
-            className="bg-transparent border-4 text-[#000] cursor-pointer hover:bg-[#181917]/5 transition-all duration-300 b-font w-full disabled:opacity-50 disabled:cursor-not-allowed"
+            className="bg-transparent border-2 text-[#000] cursor-pointer hover:bg-[#181917]/5 transition-all duration-300 b-font w-full disabled:opacity-50 disabled:cursor-not-allowed"
             disabled={isLoading || !address || !chainId}
             onClick={handleMint}
             style={{

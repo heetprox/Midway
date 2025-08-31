@@ -36,7 +36,7 @@ const Dashboard = () => {
     return (
       <div className="w-full flex flex-col justify-center items-center h-screen bg-[#FEFBEC]">
         <div className="relative">
-          <div className="w-16 h-16 border-4 border-[#181917]/20 border-t-[#181917] rounded-full animate-spin"></div>
+          <div className="w-16 h-16 border-2 border-[#181917]/20 border-t-[#181917] rounded-full animate-spin"></div>
         </div>
         <div className="b-font text-2xl text-[#181917] mt-6 animate-pulse">Loading Dashboard...</div>
       </div>
