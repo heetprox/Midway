@@ -88,11 +88,11 @@ export default function USDCMintDialog({ className }: USDCMintDialogProps) {
         <div className="flex flex-col">
           <h2 className="b-font text-[#181917] mb-2 sm:mb-4" 
               style={{ fontSize: "clamp(1.5rem, 4vw, 3rem)" }}>
-            Need USDC?
+            Need FUSD?
           </h2>
           <p className="text-gray-600 mb-4 sm:mb-6 s-font" 
              style={{ fontSize: "clamp(0.875rem, 2.5vw, 1.125rem)" }}>
-            Mint test USDC tokens to use with the deposit feature.
+            Mint test FUSD tokens to use with the deposit feature.
           </p>
           <button
             className="bg-transparent border-2 text-[#000] cursor-pointer hover:bg-[#181917]/5 transition-all duration-300 b-font w-full disabled:opacity-50 disabled:cursor-not-allowed"
@@ -104,7 +104,7 @@ export default function USDCMintDialog({ className }: USDCMintDialogProps) {
               fontSize: "clamp(1.25rem, 3vw, 2rem)"
             }}
           >
-            {isLoading ? "Minting..." : "Mint USDC"}
+            {isLoading ? "Minting..." : "Mint FUSD"}
           </button>
         </div>
 

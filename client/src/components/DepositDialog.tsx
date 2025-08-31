@@ -143,7 +143,7 @@ export default function DepositDialog({ className }: DepositDialogProps) {
             />
             <span className="inline-flex s-font leading-none items-center whitespace-nowrap" 
                   style={{ fontSize: "clamp(1rem, 2.5vw, 1.25rem)" }}>
-              USDC
+              FUSD
             </span>
           </div>
 

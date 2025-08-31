@@ -142,7 +142,7 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
             ? "Loading..." 
             : balanceError 
               ? "Error loading balance"
-              : `${maxWithdrawAmount.toFixed(2)} USDC`
+              : `${maxWithdrawAmount.toFixed(2)} FUSD`
           }
         </div>
         
@@ -167,11 +167,11 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
             />
             <span className="inline-flex s-font leading-none items-center whitespace-nowrap" 
                   style={{ fontSize: "clamp(1rem, 2.5vw, 1.25rem)" }}>
-              USDC
+              FUSD
             </span>
           </div>
           
-          <div className="flex flex-row gap-2 sm:gap-4 w-full sm:w-auto">
+          <div className="flex sm:flex-row gap-2 sm:gap-4 w-full sm:w-auto">
             {/* Max button */}
             <button
               onClick={() => setAmount(maxWithdrawAmount)}
