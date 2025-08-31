@@ -150,7 +150,7 @@ sequenceDiagram
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/midway.git
+git clone https://github.com/heetprox/midway.git
 cd midway
 
 # Install frontend dependencies
