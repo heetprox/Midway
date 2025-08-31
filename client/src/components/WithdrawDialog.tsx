@@ -18,9 +18,11 @@ import {
   sepolia as ethSepolia, 
   zoraSepolia, 
   baseSepolia, 
-  polygonAmoy 
+  polygonAmoy,
+  worldchainSepolia,
+  inkSepolia,
+  unichainSepolia,
 } from "wagmi/chains";
-import { worldchainSepolia, inkSepolia, unichainSepolia } from "../utils/chainConfig";
 import MidPayCore from "../abi/MidPayCore.json";
 import MidPayClient from "../abi/MidPayClient.json";
 import { toBigInt, toNumber } from "../utils/bigIntHelpers";

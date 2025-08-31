@@ -22,8 +22,10 @@ import {
   zoraSepolia,
   baseSepolia,
   polygonAmoy,
+  worldchainSepolia,
+  unichainSepolia,
+  inkSepolia,
 } from "wagmi/chains";
-import { worldchainSepolia, inkSepolia, unichainSepolia } from "./chainConfig";
 
 // Mapping between real blockchain chain IDs and ExternalRouter chain IDs
 const REAL_TO_EXTERNAL_ROUTER_CHAIN_ID = {

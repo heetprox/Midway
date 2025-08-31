@@ -16,7 +16,8 @@ export const worldchainSepolia = defineChain({
   name: 'Worldchain Sepolia',
   nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
   rpcUrls: {
-    default: { http: ['https://worldchain-sepolia.g.alchemy.com/public'] },
+    default: { http: ['https://worldchain-sepolia.g.alchemy.com/v2/demo'] },
+    public: { http: ['https://worldchain-sepolia.g.alchemy.com/v2/demo'] },
   },
   blockExplorers: {
     default: { name: 'Worldchain Explorer', url: 'https://worldchain-sepolia.blockscout.com' },
@@ -30,6 +31,7 @@ export const inkSepolia = defineChain({
   nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
   rpcUrls: {
     default: { http: ['https://rpc-gel-sepolia.inkonchain.com'] },
+    public: { http: ['https://rpc-gel-sepolia.inkonchain.com'] },
   },
   blockExplorers: {
     default: { name: 'Ink Explorer', url: 'https://explorer-sepolia.inkonchain.com' },
@@ -43,6 +45,7 @@ export const unichainSepolia = defineChain({
   nativeCurrency: { name: 'Ether', symbol: 'ETH', decimals: 18 },
   rpcUrls: {
     default: { http: ['https://sepolia.unichain.org'] },
+    public: { http: ['https://sepolia.unichain.org'] },
   },
   blockExplorers: {
     default: { name: 'Unichain Explorer', url: 'https://sepolia.uniscan.xyz' },
@@ -50,16 +53,15 @@ export const unichainSepolia = defineChain({
   testnet: true,
 });
 
-// Define chains with real blockchain chain IDs for proper network switching
 const chains = [
   optimismSepolia, 
   ethSepolia, 
   zoraSepolia, 
   baseSepolia, 
+  polygonAmoy,
   worldchainSepolia, 
   inkSepolia, 
   unichainSepolia, 
-  polygonAmoy
 ] as const;
 
 // Create public client for Optimism Sepolia
@@ -91,9 +93,9 @@ export const config = createConfig({
     [ethSepolia.id]: http(),
     [zoraSepolia.id]: http(),
     [baseSepolia.id]: http(),
+    [polygonAmoy.id]: http(),
     [worldchainSepolia.id]: http(),
     [inkSepolia.id]: http(),
     [unichainSepolia.id]: http(),
-    [polygonAmoy.id]: http(),
   },
 });
