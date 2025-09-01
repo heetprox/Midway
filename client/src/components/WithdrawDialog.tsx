@@ -148,7 +148,7 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
     : 0;
 
   const isAmountValid = amount > 0 && amount <= maxWithdrawAmount;
-  const isWithdrawDisabled = !isAmountValid || isWithdrawLoading || isConfirming || isCrossChainProcessing;
+  const isWithdrawDisabled = !isAmountValid || isWithdrawLoading || isConfirming;
 
   return (
     <div className={`border-2 border-black shadow-xl w-full ${className}`}
@@ -249,10 +249,17 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
         {isWithdrawSuccess && (
           <div className="text-black mt-2 sm:mt-4 s-font" 
                style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)" }}>
-            {isCrossChainProcessing 
-              ? "✅ Withdrawal successful! Processing cross-chain messages..." 
-              : "✅ Withdrawal completed! Your balance will be updated soon."
-            }
+            {isCrossChainProcessing && crossChainStatus ? (
+              <div className="space-y-1">
+                <div>✅ Withdrawal successful!</div>
+                <div className="text-blue-600">{crossChainStatus}</div>
+                <div className="text-gray-500 text-xs">Please wait, this may take up to 1 minute...</div>
+              </div>
+            ) : crossChainStatus ? (
+              <div>{crossChainStatus}</div>
+            ) : (
+              "✅ Withdrawal completed! Your balance will be updated soon."
+            )}
           </div>
         )}
         

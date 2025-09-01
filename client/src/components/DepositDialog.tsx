@@ -29,6 +29,7 @@ export default function DepositDialog({ className }: DepositDialogProps) {
   const [debouncedAmount] = useDebounce(amount, 500);
   const [needsApproval, setNeedsApproval] = useState<boolean>(false);
   const [crossChainStatus, setCrossChainStatus] = useState<string>('');
+  const [isDepositFlowComplete, setIsDepositFlowComplete] = useState<boolean>(false);
   const router = useRouter();
   const { isProcessing: isCrossChainProcessing, processAfterTransaction } = useCrossChainProcessor();
 
@@ -80,8 +81,9 @@ export default function DepositDialog({ className }: DepositDialogProps) {
 
   // Handle successful deposit
   useEffect(() => {
-    if (isDepositSuccess && depositHash) {
+    if (isDepositSuccess && depositHash && !isDepositFlowComplete) {
       setCrossChainStatus('🔍 Scanning all chains for pending messages...');
+      setIsDepositFlowComplete(true); // Mark that we've started the flow
       
       // Trigger cross-chain processing
       processAfterTransaction(depositHash)
@@ -100,13 +102,16 @@ export default function DepositDialog({ className }: DepositDialogProps) {
           // Still continue with the normal flow even if cross-chain processing fails
         })
         .finally(() => {
-          // Refresh after processing (or timeout)
+          // Show final status for a moment, then reset for next deposit
           setTimeout(() => {
+            setCrossChainStatus('');
+            setAmount(0); // Reset amount for next deposit
+            setIsDepositFlowComplete(false); // Reset for next deposit
             router.refresh();
           }, 3000);
         });
     }
-  }, [isDepositSuccess, depositHash, processAfterTransaction, router]);
+  }, [isDepositSuccess, depositHash, isDepositFlowComplete, processAfterTransaction, router]);
 
   const handleApprove = () => {
     if (!chainId) return;
@@ -186,7 +191,7 @@ export default function DepositDialog({ className }: DepositDialogProps) {
                 {isApproveLoading ? "Approving..." : "Approve"}
               </button>
             )}
-            {!needsApproval && !isDepositSuccess && (
+            {!needsApproval && (!isDepositSuccess || !isDepositFlowComplete) && (
               <button
                 style={{
                   padding: "clamp(0.5rem, 1vw, 1rem)",
@@ -200,7 +205,7 @@ export default function DepositDialog({ className }: DepositDialogProps) {
                 {isDepositLoading ? "Depositing..." : "Deposit"}
               </button>
             )}
-            {isDepositSuccess && isCrossChainProcessing && (
+            {isDepositSuccess && isDepositFlowComplete && isCrossChainProcessing && (
               <div 
                 style={{
                   padding: "clamp(0.5rem, 1vw, 1rem)",
@@ -220,7 +225,7 @@ export default function DepositDialog({ className }: DepositDialogProps) {
             Confirm in your wallet...
           </div>
         )}
-        {isDepositSuccess && (
+        {isDepositSuccess && isDepositFlowComplete && (
           <div className="text-black mt-2 sm:mt-4 s-font" 
                style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)" }}>
             {isCrossChainProcessing && crossChainStatus ? (
