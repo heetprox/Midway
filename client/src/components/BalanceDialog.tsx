@@ -1,22 +1,18 @@
 'use client';
 
-import { useEffect } from "react";
 import {
   useAccount,
   useReadContract,
   useChainId,
-  useSwitchChain
 } from "wagmi";
 import { Address } from "viem";
-import { optimismSepolia, sepolia as ethSepolia, zoraSepolia, modeTestnet as modeSepolia } from "wagmi/chains";
+import { optimismSepolia } from "wagmi/chains";
 import MidPayCore from "../abi/MidPayCore.json";
 import fakeUSDC from "../abi/FakeUSDC.json";
 import { toFixed } from "../utils/bigIntHelpers";
 import { getUsdcAddress } from "../utils/addressHelpers";
 import { OptimismCore } from "@/context/constants";
 
-// Define supported chains using real blockchain chain IDs
-const SUPPORTED_CHAINS = [optimismSepolia, ethSepolia, zoraSepolia, modeSepolia] as const;
 
 export default function BalanceDialog() {
   const { address } = useAccount();

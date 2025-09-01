@@ -243,7 +243,7 @@ class TransactionProcessor {
     const result = { processed: 0, errors: [] as string[] };
     
     try {
-      console.log(`🔄 Checking messages on ${CHAIN_CONFIGS[sourceChain].name}...`);
+      console.log(`🔄 Checking messages on ${targetChains.join(', ')} ${CHAIN_CONFIGS[sourceChain].name}...`);
       
       const queueLength = getNumber(await this.routers[sourceChain].queueLength());
       
@@ -305,8 +305,8 @@ class TransactionProcessor {
 
     this.isProcessing = true;
     let totalProcessed = 0;
-    let allErrors: string[] = [];
-    let processedChains: string[] = [];
+    const allErrors: string[] = [];
+    const processedChains: string[] = [];
 
     console.log(`🎯 Starting transaction detection and processing (timeout: ${timeoutMs}ms)...`);
 

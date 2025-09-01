@@ -9,18 +9,10 @@ import {
   useWriteContract,
   useWaitForTransactionReceipt,
   useChainId,
-  useSwitchChain,
 } from "wagmi";
 import { Address } from "viem";
 import { 
   optimismSepolia, 
-  sepolia as ethSepolia, 
-  zoraSepolia, 
-  baseSepolia, 
-  polygonAmoy,
-  worldchainSepolia,
-  inkSepolia,
-  unichainSepolia,
 } from "wagmi/chains";
 import MidPayCore from "../abi/MidPayCore.json";
 import MidPayClient from "../abi/MidPayClient.json";
@@ -46,7 +38,6 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
   const { isProcessing: isCrossChainProcessing, processAfterTransaction } = useCrossChainProcessor();
 
   // Note: Removed automatic chain switching to allow users to freely switch between supported chains
-
   // Read MidPay balance from core contract on Optimism Sepolia
   // Note: Must use REAL blockchain chain ID for wagmi contract reads
   const {

@@ -2,7 +2,7 @@
 "use client";
 
 import RoundButton from "@/components/RoundButton";
-import { useAccount, useConnect, useDisconnect } from "wagmi";
+import { useAccount, useConnect } from "wagmi";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect } from "react";
 
