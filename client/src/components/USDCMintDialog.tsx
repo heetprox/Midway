@@ -90,7 +90,7 @@ export default function USDCMintDialog({ className }: USDCMintDialogProps) {
               style={{ fontSize: "clamp(1.5rem, 4vw, 3rem)" }}>
             Need FUSD?
           </h2>
-          <p className="text-gray-600 mb-4 sm:mb-6 s-font" 
+          <p className="text-black mb-4 sm:mb-6 s-font" 
              style={{ fontSize: "clamp(0.875rem, 2.5vw, 1.125rem)" }}>
             Mint test FUSD tokens to use with the deposit feature.
           </p>
@@ -122,7 +122,7 @@ export default function USDCMintDialog({ className }: USDCMintDialogProps) {
         )}
         {isSuccess && (
           <div className="text-black mt-2 sm:mt-4 s-font" 
-               style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)" }}>
+               style={{ fontSize: "clamp(1rem, 1vw, 2rem)" }}>
             Successfully minted! Page will refresh shortly.
           </div>
         )}

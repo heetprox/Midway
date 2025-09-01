@@ -57,6 +57,7 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
   const [amount, setAmount] = useState<number>(0);
   const [debouncedAmount] = useDebounce(amount, 500);
   const [crossChainStatus, setCrossChainStatus] = useState<string>('');
+  const [isWithdrawFlowComplete, setIsWithdrawFlowComplete] = useState<boolean>(false);
   const { isProcessing: isCrossChainProcessing, processAfterTransaction } = useCrossChainProcessor();
 
   // Note: Removed automatic chain switching to allow users to freely switch between supported chains
@@ -95,8 +96,9 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
 
   // Handle successful withdrawal
   useEffect(() => {
-    if (isWithdrawSuccess && withdrawHash) {
+    if (isWithdrawSuccess && withdrawHash && !isWithdrawFlowComplete) {
       setCrossChainStatus('🔍 Scanning all chains for pending messages...');
+      setIsWithdrawFlowComplete(true); // Mark that we've started the flow
       
       // Trigger cross-chain processing
       processAfterTransaction(withdrawHash)
@@ -115,13 +117,16 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
           // Still continue with the normal flow even if cross-chain processing fails
         })
         .finally(() => {
-          // Refresh after processing (or timeout)
+          // Show final status for a moment, then reset for next withdrawal
           setTimeout(() => {
+            setCrossChainStatus('');
+            setAmount(0); // Reset amount for next withdrawal
+            setIsWithdrawFlowComplete(false); // Reset for next withdrawal
             router.refresh();
           }, 3000);
         });
     }
-  }, [isWithdrawSuccess, withdrawHash, processAfterTransaction, router]);
+  }, [isWithdrawSuccess, withdrawHash, isWithdrawFlowComplete, processAfterTransaction, router]);
 
   // Handle withdrawal execution
   const handleWithdraw = () => {
@@ -210,7 +215,7 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
               Max
             </button>
             
-            {!isWithdrawSuccess && (
+            {(!isWithdrawSuccess || !isWithdrawFlowComplete) && (
               <button
                 onClick={handleWithdraw}
                 disabled={isWithdrawDisabled}
@@ -224,17 +229,19 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
                 {isWithdrawLoading || isConfirming ? "Processing..." : "Withdraw"}
               </button>
             )}
-            {isWithdrawSuccess && isCrossChainProcessing && (
-              <div 
-                style={{
-                  padding: "clamp(0.5rem, 1vw, 1rem)",
-                  boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)",
-                  fontSize: "clamp(0.875rem, 2vw, 1rem)"
-                }}
-                className="text-[#181917] bg-yellow-100 border-2 rounded-full w-full sm:w-auto text-center b-font"
-              >
-                🔄 Processing Cross-chain...
-              </div>
+            {isWithdrawSuccess && isWithdrawFlowComplete && isCrossChainProcessing && (
+                  <button
+                  onClick={handleWithdraw}
+                  disabled={isWithdrawLoading || isConfirming}
+                  style={{
+                    padding: "clamp(0.5rem, 1vw, 1rem)",
+                    boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)",
+                    fontSize: "clamp(0.875rem, 2vw, 1rem)"
+                  }}
+                  className="text-[#181917] bg-yellow-100 border-2 rounded-full hover:bg-[#181917]/5 cursor-pointer transition-all duration-300 b-font disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+                >
+                  Processing...
+                </button>
             )}
           </div>
         </div>
@@ -246,14 +253,14 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
             Confirm in your wallet...
           </div>
         )}
-        {isWithdrawSuccess && (
+        {isWithdrawSuccess && isWithdrawFlowComplete && (
           <div className="text-black mt-2 sm:mt-4 s-font" 
                style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)" }}>
             {isCrossChainProcessing && crossChainStatus ? (
-              <div className="space-y-1">
+              <div className="space-y-1 text-lg">
                 <div>✅ Withdrawal successful!</div>
-                <div className="text-blue-600">{crossChainStatus}</div>
-                <div className="text-gray-500 text-xs">Please wait, this may take up to 1 minute...</div>
+                <div className="text-black">{crossChainStatus}</div>
+                <div className="text-black text-lg">Please wait, this may take up to 1 minute... after balance update refresh the page for more withdrawals</div>
               </div>
             ) : crossChainStatus ? (
               <div>{crossChainStatus}</div>

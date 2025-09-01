@@ -206,16 +206,18 @@ export default function DepositDialog({ className }: DepositDialogProps) {
               </button>
             )}
             {isDepositSuccess && isDepositFlowComplete && isCrossChainProcessing && (
-              <div 
+                <button
                 style={{
                   padding: "clamp(0.5rem, 1vw, 1rem)",
                   boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)",
                   fontSize: "clamp(0.875rem, 2vw, 1rem)"
                 }}
-                className="text-[#181917] bg-yellow-100 border-2 rounded-full w-full sm:w-auto text-center b-font"
+                className="text-[#181917] bg-yellow-100 border-2 rounded-full hover:bg-[#181917]/5 cursor-pointer transition-all duration-300 b-font disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+                disabled={isDepositLoading}
+                onClick={handleDeposit}
               >
-                🔄 Processing Cross-chain...
-              </div>
+                Processing Cross-chain...
+              </button>
             )}
           </div>
         </div>
@@ -229,10 +231,10 @@ export default function DepositDialog({ className }: DepositDialogProps) {
           <div className="text-black mt-2 sm:mt-4 s-font" 
                style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)" }}>
             {isCrossChainProcessing && crossChainStatus ? (
-              <div className="space-y-1">
+              <div className="space-y-1 text-lg">
                 <div>✅ Deposit successful!</div>
-                <div className="text-blue-600">{crossChainStatus}</div>
-                <div className="text-gray-500 text-xs">Please wait, this may take up to 1 minute...</div>
+                <div className="text-black text-lg">{crossChainStatus}</div>
+                <div className="text-black leading-none text-lg">Please wait, this may take up to 1 minute... after balance update refresh the page for more deposits</div>
               </div>
             ) : crossChainStatus ? (
               <div>{crossChainStatus}</div>
