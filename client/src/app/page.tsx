@@ -58,13 +58,13 @@ const Home = () => {
             Deposit Once, Pay Anywhere
           </div>
         </div>
-        <div className="w-full flex justify-start"
+        <Link href="https://github.com/heetprox/Midway-contracts.git" target="_blank" className="w-full flex justify-start"
           style={{
             padding: "clamp(1.25rem, 2vw, 200rem)",
           }}
         >
           <RoundButton text1="GIVE IT ★" className="20" text2="GITHUB" link="/" />
-        </div>
+        </Link>
 
 
         <Link className="s-font  underline absolute -bottom-8 -right-4 md:bottom-0 md:right-0 underline-offset-4"
