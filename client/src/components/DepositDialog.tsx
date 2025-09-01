@@ -13,9 +13,8 @@ import fakeUSDC from "../abi/FakeUSDC.json";
 import { useEffect, useState } from "react";
 import { useDebounce } from "use-debounce";
 import { useRouter } from "next/navigation";
-import type { Address, Hash } from "viem";
+import type { Address } from "viem";
 import { toBigInt } from "@/utils/bigIntHelpers";
-import ChainSelector from "./ChainSelector";
 import { useCrossChainProcessor } from "./CrossChainProcessor";
 
 interface DepositDialogProps {

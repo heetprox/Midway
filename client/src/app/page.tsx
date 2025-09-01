@@ -2,7 +2,6 @@
 "use client";
 
 import RoundButton from "@/components/RoundButton";
-import Image from "next/image";
 import { useAccount, useConnect, useDisconnect } from "wagmi";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect } from "react";
@@ -11,7 +10,6 @@ import { useEffect } from "react";
 const Home = () => {
   const { address, isConnected } = useAccount();
   const { connect, connectors } = useConnect();
-  const { disconnect } = useDisconnect();
   const router = useRouter();
 
   const handleConnect = () => {

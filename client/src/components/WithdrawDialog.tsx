@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import ChainSelector from "./ChainSelector";
 import { useDebounce } from "use-debounce";
 import {
   useAccount,
@@ -12,7 +11,7 @@ import {
   useChainId,
   useSwitchChain,
 } from "wagmi";
-import { Address, formatUnits, parseUnits } from "viem";
+import { Address } from "viem";
 import { 
   optimismSepolia, 
   sepolia as ethSepolia, 
@@ -31,19 +30,6 @@ import { OptimismCore } from "@/context/constants";
 import { getMidPayAddress } from "@/utils/addressHelpers";
 import { useCrossChainProcessor } from "./CrossChainProcessor";
 
-// Define supported chains using real blockchain chain IDs
-const SUPPORTED_CHAINS = [
-  optimismSepolia, 
-  ethSepolia, 
-  zoraSepolia, 
-  baseSepolia, 
-  polygonAmoy,
-  worldchainSepolia, 
-  inkSepolia, 
-  unichainSepolia, 
-] as const;
-const DEFAULT_CHAIN = optimismSepolia;
-
 interface WithdrawDialogProps {
   className?: string;
 }
@@ -51,7 +37,6 @@ interface WithdrawDialogProps {
 export default function WithdrawDialog({ className }: WithdrawDialogProps) {
   const { address } = useAccount();
   const chainId = useChainId();
-  const { switchChain } = useSwitchChain();
   const router = useRouter();
   
   const [amount, setAmount] = useState<number>(0);

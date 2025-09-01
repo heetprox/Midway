@@ -17,16 +17,11 @@ import { OptimismCore } from "@/context/constants";
 
 // Define supported chains using real blockchain chain IDs
 const SUPPORTED_CHAINS = [optimismSepolia, ethSepolia, zoraSepolia, modeSepolia] as const;
-const DEFAULT_CHAIN = optimismSepolia;
 
 export default function BalanceDialog() {
   const { address } = useAccount();
   const chainId = useChainId();
-  const { switchChain } = useSwitchChain();
 
-  // Note: Removed automatic chain switching to allow users to freely switch between supported chains
-
-  // Read MidPay balance from core contract on Optimism Sepolia
   const {
     data: MidPayCoreBalance,
     isLoading: isMidPayCoreBalanceLoading,
@@ -59,10 +54,6 @@ export default function BalanceDialog() {
       refetchInterval: 30000,
     },
   });
-
-  // Get current chain name for display
-  const currentChain = SUPPORTED_CHAINS.find(chain => chain.id === chainId);
-  const chainName = currentChain?.name || 'Unknown Chain';
 
   return (
     <div className="w-full flex flex-col gap-4 sm:gap-6 s-font h-full rounded-2xl">
