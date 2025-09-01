@@ -5,6 +5,7 @@ import RoundButton from "@/components/RoundButton";
 import { useAccount, useConnect } from "wagmi";
 import { redirect, useRouter } from "next/navigation";
 import { useEffect } from "react";
+import Link from "next/link";
 
 
 const Home = () => {
@@ -31,7 +32,7 @@ const Home = () => {
         padding: "clamp(3rem, 2vw, 200rem)",
       }}
     >
-      <div className="flex flex-col justify-between w-full h-full">
+      <div className="flex flex-col relative justify-center w-full h-full">
         <div className="w-full flex justify-end"
           style={{
             padding: "0 clamp(1.25rem, 2vw, 200rem)",
@@ -64,6 +65,14 @@ const Home = () => {
         >
           <RoundButton text1="GIVE IT ★" className="20" text2="GITHUB" link="/" />
         </div>
+
+
+        <Link className="s-font  underline absolute -bottom-8 -right-4 md:bottom-0 md:right-0 underline-offset-4"
+        style={{
+          fontSize: "clamp(2rem,3vw, 200rem)",
+        }}
+        target=""
+        href="https://console.optimism.io/faucet">get test tokens🡥</Link>
       </div>
     </div>
   );
