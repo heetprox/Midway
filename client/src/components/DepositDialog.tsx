@@ -223,10 +223,17 @@ export default function DepositDialog({ className }: DepositDialogProps) {
         {isDepositSuccess && (
           <div className="text-black mt-2 sm:mt-4 s-font" 
                style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)" }}>
-            {isCrossChainProcessing 
-              ? " Deposit successful! Processing cross-chain messages... Wait for a Minute..." 
-              : " Deposit completed! Your balance will be updated soon."
-            }
+            {isCrossChainProcessing && crossChainStatus ? (
+              <div className="space-y-1">
+                <div>✅ Deposit successful!</div>
+                <div className="text-blue-600">{crossChainStatus}</div>
+                <div className="text-gray-500 text-xs">Please wait, this may take up to 1 minute...</div>
+              </div>
+            ) : crossChainStatus ? (
+              <div>{crossChainStatus}</div>
+            ) : (
+              "✅ Deposit completed! Your balance will be updated soon."
+            )}
           </div>
         )}
       </div>

@@ -56,6 +56,7 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
   
   const [amount, setAmount] = useState<number>(0);
   const [debouncedAmount] = useDebounce(amount, 500);
+  const [crossChainStatus, setCrossChainStatus] = useState<string>('');
   const { isProcessing: isCrossChainProcessing, processAfterTransaction } = useCrossChainProcessor();
 
   // Note: Removed automatic chain switching to allow users to freely switch between supported chains
@@ -95,16 +96,21 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
   // Handle successful withdrawal
   useEffect(() => {
     if (isWithdrawSuccess && withdrawHash) {
+      setCrossChainStatus('🔍 Scanning all chains for pending messages...');
+      
       // Trigger cross-chain processing
       processAfterTransaction(withdrawHash)
         .then((success) => {
           if (success) {
+            setCrossChainStatus('✅ Cross-chain messages processed successfully!');
             console.log('✅ Withdrawal and cross-chain processing completed successfully!');
           } else {
+            setCrossChainStatus('📭 No cross-chain messages found - withdrawal complete!');
             console.log('📭 Withdrawal completed, no cross-chain messages found');
           }
         })
         .catch((error) => {
+          setCrossChainStatus('⚠️ Cross-chain processing failed, but withdrawal was successful');
           console.error('❌ Cross-chain processing failed:', error);
           // Still continue with the normal flow even if cross-chain processing fails
         })
@@ -112,7 +118,7 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
           // Refresh after processing (or timeout)
           setTimeout(() => {
             router.refresh();
-          }, 2000);
+          }, 3000);
         });
     }
   }, [isWithdrawSuccess, withdrawHash, processAfterTransaction, router]);
@@ -204,19 +210,32 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
               Max
             </button>
             
-            <button
-              onClick={handleWithdraw}
-              disabled={isWithdrawDisabled}
-              style={{
-                padding: "clamp(0.5rem, 1vw, 1rem)",
-                boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)",
-                fontSize: "clamp(0.875rem, 2vw, 1rem)"
-              }}
-              className="text-[#181917] bg-transparent border-2 rounded-full hover:bg-[#181917]/5 cursor-pointer transition-all duration-300 b-font disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
-            >
-              {isWithdrawLoading || isConfirming ? "Processing..." : 
-               isCrossChainProcessing ? "Cross-chain Processing..." : "Withdraw"}
-            </button>
+            {!isWithdrawSuccess && (
+              <button
+                onClick={handleWithdraw}
+                disabled={isWithdrawDisabled}
+                style={{
+                  padding: "clamp(0.5rem, 1vw, 1rem)",
+                  boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)",
+                  fontSize: "clamp(0.875rem, 2vw, 1rem)"
+                }}
+                className="text-[#181917] bg-transparent border-2 rounded-full hover:bg-[#181917]/5 cursor-pointer transition-all duration-300 b-font disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+              >
+                {isWithdrawLoading || isConfirming ? "Processing..." : "Withdraw"}
+              </button>
+            )}
+            {isWithdrawSuccess && isCrossChainProcessing && (
+              <div 
+                style={{
+                  padding: "clamp(0.5rem, 1vw, 1rem)",
+                  boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)",
+                  fontSize: "clamp(0.875rem, 2vw, 1rem)"
+                }}
+                className="text-[#181917] bg-yellow-100 border-2 rounded-full w-full sm:w-auto text-center b-font"
+              >
+                🔄 Processing Cross-chain...
+              </div>
+            )}
           </div>
         </div>
 
