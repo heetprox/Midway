@@ -2,7 +2,6 @@
 
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import ChainSelector from "./ChainSelector";
 import { useDebounce } from "use-debounce";
 import {
   useAccount,
@@ -10,18 +9,10 @@ import {
   useWriteContract,
   useWaitForTransactionReceipt,
   useChainId,
-  useSwitchChain,
 } from "wagmi";
-import { Address, formatUnits, parseUnits } from "viem";
+import { Address } from "viem";
 import { 
   optimismSepolia, 
-  sepolia as ethSepolia, 
-  zoraSepolia, 
-  baseSepolia, 
-  polygonAmoy,
-  worldchainSepolia,
-  inkSepolia,
-  unichainSepolia,
 } from "wagmi/chains";
 import MidPayCore from "../abi/MidPayCore.json";
 import MidPayClient from "../abi/MidPayClient.json";
@@ -29,19 +20,7 @@ import { toBigInt, toNumber } from "../utils/bigIntHelpers";
 
 import { OptimismCore } from "@/context/constants";
 import { getMidPayAddress } from "@/utils/addressHelpers";
-
-// Define supported chains using real blockchain chain IDs
-const SUPPORTED_CHAINS = [
-  optimismSepolia, 
-  ethSepolia, 
-  zoraSepolia, 
-  baseSepolia, 
-  polygonAmoy,
-  worldchainSepolia, 
-  inkSepolia, 
-  unichainSepolia, 
-] as const;
-const DEFAULT_CHAIN = optimismSepolia;
+import { useCrossChainProcessor } from "./CrossChainProcessor";
 
 interface WithdrawDialogProps {
   className?: string;
@@ -50,14 +29,15 @@ interface WithdrawDialogProps {
 export default function WithdrawDialog({ className }: WithdrawDialogProps) {
   const { address } = useAccount();
   const chainId = useChainId();
-  const { switchChain } = useSwitchChain();
   const router = useRouter();
   
   const [amount, setAmount] = useState<number>(0);
   const [debouncedAmount] = useDebounce(amount, 500);
+  const [crossChainStatus, setCrossChainStatus] = useState<string>('');
+  const [isWithdrawFlowComplete, setIsWithdrawFlowComplete] = useState<boolean>(false);
+  const { isProcessing: isCrossChainProcessing, processAfterTransaction } = useCrossChainProcessor();
 
   // Note: Removed automatic chain switching to allow users to freely switch between supported chains
-
   // Read MidPay balance from core contract on Optimism Sepolia
   // Note: Must use REAL blockchain chain ID for wagmi contract reads
   const {
@@ -92,12 +72,37 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
 
   // Handle successful withdrawal
   useEffect(() => {
-    if (isWithdrawSuccess) {
-      setTimeout(() => {
-        router.refresh();
-      }, 5000);
+    if (isWithdrawSuccess && withdrawHash && !isWithdrawFlowComplete) {
+      setCrossChainStatus('🔍 Scanning all chains for pending messages...');
+      setIsWithdrawFlowComplete(true); // Mark that we've started the flow
+      
+      // Trigger cross-chain processing
+      processAfterTransaction(withdrawHash)
+        .then((success) => {
+          if (success) {
+            setCrossChainStatus('✅ Cross-chain messages processed successfully!');
+            console.log('✅ Withdrawal and cross-chain processing completed successfully!');
+          } else {
+            setCrossChainStatus('📭 No cross-chain messages found - withdrawal complete!');
+            console.log('📭 Withdrawal completed, no cross-chain messages found');
+          }
+        })
+        .catch((error) => {
+          setCrossChainStatus('⚠️ Cross-chain processing failed, but withdrawal was successful');
+          console.error('❌ Cross-chain processing failed:', error);
+          // Still continue with the normal flow even if cross-chain processing fails
+        })
+        .finally(() => {
+          // Show final status for a moment, then reset for next withdrawal
+          setTimeout(() => {
+            setCrossChainStatus('');
+            setAmount(0); // Reset amount for next withdrawal
+            setIsWithdrawFlowComplete(false); // Reset for next withdrawal
+            router.refresh();
+          }, 3000);
+        });
     }
-  }, [isWithdrawSuccess, router]);
+  }, [isWithdrawSuccess, withdrawHash, isWithdrawFlowComplete, processAfterTransaction, router]);
 
   // Handle withdrawal execution
   const handleWithdraw = () => {
@@ -186,18 +191,34 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
               Max
             </button>
             
-            <button
-              onClick={handleWithdraw}
-              disabled={isWithdrawDisabled}
-              style={{
-                padding: "clamp(0.5rem, 1vw, 1rem)",
-                boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)",
-                fontSize: "clamp(0.875rem, 2vw, 1rem)"
-              }}
-              className="text-[#181917] bg-transparent border-2 rounded-full hover:bg-[#181917]/5 cursor-pointer transition-all duration-300 b-font disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
-            >
-              {isWithdrawLoading || isConfirming ? "Processing..." : "Withdraw"}
-            </button>
+            {(!isWithdrawSuccess || !isWithdrawFlowComplete) && (
+              <button
+                onClick={handleWithdraw}
+                disabled={isWithdrawDisabled}
+                style={{
+                  padding: "clamp(0.5rem, 1vw, 1rem)",
+                  boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)",
+                  fontSize: "clamp(0.875rem, 2vw, 1rem)"
+                }}
+                className="text-[#181917] bg-transparent border-2 rounded-full hover:bg-[#181917]/5 cursor-pointer transition-all duration-300 b-font disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+              >
+                {isWithdrawLoading || isConfirming ? "Processing..." : "Withdraw"}
+              </button>
+            )}
+            {isWithdrawSuccess && isWithdrawFlowComplete && isCrossChainProcessing && (
+                  <button
+                  onClick={handleWithdraw}
+                  disabled={isWithdrawLoading || isConfirming}
+                  style={{
+                    padding: "clamp(0.5rem, 1vw, 1rem)",
+                    boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)",
+                    fontSize: "clamp(0.875rem, 2vw, 1rem)"
+                  }}
+                  className="text-[#181917] bg-yellow-100 border-2 rounded-full hover:bg-[#181917]/5 cursor-pointer transition-all duration-300 b-font disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
+                >
+                  Processing...
+                </button>
+            )}
           </div>
         </div>
 
@@ -208,10 +229,20 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
             Confirm in your wallet...
           </div>
         )}
-        {isWithdrawSuccess && (
+        {isWithdrawSuccess && isWithdrawFlowComplete && (
           <div className="text-black mt-2 sm:mt-4 s-font" 
                style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)" }}>
-            Withdrawal successful! Your balance will be updated soon.
+            {isCrossChainProcessing && crossChainStatus ? (
+              <div className="space-y-1 text-lg">
+                <div>✅ Withdrawal successful!</div>
+                <div className="text-black">{crossChainStatus}</div>
+                <div className="text-black text-lg">Please wait, this may take up to 1 minute... after balance update refresh the page for more withdrawals</div>
+              </div>
+            ) : crossChainStatus ? (
+              <div>{crossChainStatus}</div>
+            ) : (
+              "✅ Withdrawal completed! Your balance will be updated soon."
+            )}
           </div>
         )}
         

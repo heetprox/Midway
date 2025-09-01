@@ -11,8 +11,6 @@ import {
   unichainSepolia,
 } from "wagmi/chains";
 import { injected } from "wagmi/connectors";
-import { defineChain } from "viem";
-
 
 const chains = [
   optimismSepolia, 
