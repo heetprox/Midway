@@ -146,11 +146,12 @@ sequenceDiagram
 - MetaMask or compatible wallet
 - Testnet ETH on supported chains
 
+
 ### Frontend Setup
 
 ```bash
 # Clone the repository
-git clone https://github.com/your-org/midway.git
+git clone https://github.com/heetprox/midway.git
 cd midway
 
 # Install frontend dependencies
