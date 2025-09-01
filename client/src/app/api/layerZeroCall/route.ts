@@ -50,49 +50,49 @@ const CHAIN_CONFIGS: Record<ChainType, ChainConfig> = {
   optimism: {
     name: "Optimism Sepolia",
     rpcUrl: process.env.OPTIMISM_SEPOLIA_RPC_URL!,
-    chainId: 420n,
+    chainId: BigInt(420),
     routerAddress: OptimismRouter,
   },
   eth: {
     name: "Ethereum Sepolia", 
     rpcUrl: process.env.ETH_SEPOLIA_RPC_URL!,
-    chainId: 111n,
+    chainId: BigInt(111),
     routerAddress: EthRouter,
   },
   zora: {
     name: "Zora Sepolia",
     rpcUrl: process.env.ZORA_SEPOLIA_RPC_URL!,
-    chainId: 9999n,
+    chainId: BigInt(9999),
     routerAddress: ZoraRouter,
   },
   worldchain: {
     name: "Worldchain Sepolia",
     rpcUrl: process.env.WORLDCHAIN_SEPOLIA_RPC_URL!,
-    chainId: 480n,
+    chainId: BigInt(480),
     routerAddress: WorldchainRouter,
   },
   base: {
     name: "Base Sepolia",
     rpcUrl: process.env.BASE_SEPOLIA_RPC_URL!,
-    chainId: 845n,
+    chainId: BigInt(845),
     routerAddress: BaseRouter,
   },
   ink: {
     name: "Ink Sepolia",
     rpcUrl: process.env.INK_SEPOLIA_RPC_URL!,
-    chainId: 763n,
+    chainId: BigInt(763),
     routerAddress: InkRouter,
   },
   unichain: {
     name: "Unichain Sepolia",
     rpcUrl: process.env.UNICHAIN_SEPOLIA_RPC_URL!,
-    chainId: 130n,
+    chainId: BigInt(130),
     routerAddress: UnichainRouter,
   },
   polygon: {
     name: "Polygon Amoy",
     rpcUrl: process.env.POLYGON_AMOY_RPC_URL!,
-    chainId: 800n,
+    chainId: BigInt(800),
     routerAddress: PolygonRouter,
   },
 } as const;
@@ -235,3 +235,220 @@ class TransactionProcessor {
     
     return retryableConditions.some(condition => condition);
   }
+
+  private async processChainMessages(
+    sourceChain: ChainType, 
+    targetChains: ChainType[]
+  ): Promise<{ processed: number; errors: string[] }> {
+    const result = { processed: 0, errors: [] as string[] };
+    
+    try {
+      console.log(`🔄 Checking messages on ${CHAIN_CONFIGS[sourceChain].name}...`);
+      
+      const queueLength = getNumber(await this.routers[sourceChain].queueLength());
+      
+      if (queueLength === 0) {
+        console.log(`📭 No messages to process on ${CHAIN_CONFIGS[sourceChain].name}`);
+        return result;
+      }
+
+      console.log(`📨 Found ${queueLength} messages on ${CHAIN_CONFIGS[sourceChain].name}`);
+
+      // Process messages from newest to oldest
+      for (let i = queueLength - 1; i >= 0; i--) {
+        const message: MessageData = await this.routers[sourceChain].messageQueue(i);
+        console.log(`📨 Processing message ${i + 1}/${queueLength}:`, message);
+
+        try {
+          if (sourceChain === "optimism") {
+            // Optimism → Other chains routing
+            const targetChain = this.getDestinationChain(message[0]);
+            
+            if (!targetChain) {
+              console.log("⏭️  Message not for supported chains, skipping...");
+              // Pop skipped messages so they don't get stuck
+              await this.routers[sourceChain].pop();
+              continue;
+            }
+
+            await this.routeMessage(message, sourceChain, targetChain, 0);
+          } else {
+            // Other chains → Optimism routing
+            await this.routeMessage(message, sourceChain, "optimism", 0);
+          }
+
+          // Only remove message after successful routing
+          await this.routers[sourceChain].pop();
+          console.log(`✅ Popped message from ${CHAIN_CONFIGS[sourceChain].name}`);
+          result.processed++;
+        } catch (error: any) {
+          console.error(`❌ Failed to route message ${i + 1}:`, error);
+          result.errors.push(`${CHAIN_CONFIGS[sourceChain].name}: ${error.message || error}`);
+          // Don't pop on failure - will retry on next call
+          break; // Exit loop to avoid processing same message repeatedly
+        }
+      }
+
+      console.log(`🎉 Processed ${result.processed} messages on ${CHAIN_CONFIGS[sourceChain].name}`);
+    } catch (error: any) {
+      console.error(`❌ Error processing ${sourceChain} messages:`, error);
+      result.errors.push(`${CHAIN_CONFIGS[sourceChain].name}: ${error.message || error}`);
+    }
+    
+    return result;
+  }
+
+  public async detectAndProcessTransactions(timeoutMs: number = 60000): Promise<ProcessingResult> {
+    if (this.isProcessing) {
+      throw new Error("Transaction processing already in progress");
+    }
+
+    this.isProcessing = true;
+    let totalProcessed = 0;
+    let allErrors: string[] = [];
+    let processedChains: string[] = [];
+
+    console.log(`🎯 Starting transaction detection and processing (timeout: ${timeoutMs}ms)...`);
+
+    try {
+      // Set up timeout
+      const timeoutPromise = new Promise<never>((_, reject) => {
+        this.timeoutId = setTimeout(() => {
+          reject(new Error(`Processing timeout after ${timeoutMs}ms`));
+        }, timeoutMs);
+      });
+
+      // Process all chains
+      const processingPromise = (async () => {
+        // Check for messages on all chains
+        const chains: ChainType[] = ["optimism", "eth", "zora", "worldchain", "base", "ink", "unichain", "polygon"];
+        let hasAnyMessages = false;
+        
+        for (const chain of chains) {
+          if (!this.isProcessing) break; // Early exit if stopped
+          
+          try {
+            const result = await this.processChainMessages(
+              chain, 
+              chain === "optimism" 
+                ? ["eth", "zora", "worldchain", "base", "ink", "unichain", "polygon"]
+                : ["optimism"]
+            );
+            
+            if (result.processed > 0) {
+              hasAnyMessages = true;
+              totalProcessed += result.processed;
+              processedChains.push(CHAIN_CONFIGS[chain].name);
+            }
+            
+            if (result.errors.length > 0) {
+              allErrors.push(...result.errors);
+            }
+          } catch (error: any) {
+            console.error(`❌ Error processing ${chain}:`, error);
+            allErrors.push(`${CHAIN_CONFIGS[chain].name}: ${error.message || error}`);
+          }
+        }
+        
+        // If no messages found on any chain, exit early
+        if (!hasAnyMessages) {
+          console.log("📭 No messages found on any chain, completing processing early");
+          return;
+        }
+      })();
+
+      // Wait for either processing to complete or timeout
+      await Promise.race([processingPromise, timeoutPromise]);
+
+      // Clear timeout if processing completed first
+      if (this.timeoutId) {
+        clearTimeout(this.timeoutId);
+        this.timeoutId = null;
+      }
+
+    } catch (error: any) {
+      if (error.message.includes('timeout')) {
+        console.log(`⏰ Processing completed with timeout: ${totalProcessed} messages processed`);
+      } else {
+        console.error('❌ Processing error:', error);
+        allErrors.push(`General error: ${error.message || error}`);
+      }
+    } finally {
+      this.isProcessing = false;
+      if (this.timeoutId) {
+        clearTimeout(this.timeoutId);
+        this.timeoutId = null;
+      }
+    }
+
+    const result: ProcessingResult = {
+      success: totalProcessed > 0,
+      messagesProcessed: totalProcessed,
+      errors: allErrors,
+      chains: processedChains
+    };
+
+    console.log(`🏁 Processing complete:`, result);
+    return result;
+  }
+
+  public stop(): void {
+    console.log("🛑 Stopping transaction processor...");
+    this.isProcessing = false;
+    if (this.timeoutId) {
+      clearTimeout(this.timeoutId);
+      this.timeoutId = null;
+    }
+  }
+}
+
+// API Route Handler
+export async function POST(request: NextRequest) {
+  const startTime = Date.now();
+  
+  try {
+    // Parse request body for optional timeout
+    const body = await request.json().catch(() => ({}));
+    const timeoutMs = body.timeout || 60000; // Default 1 minute
+
+    console.log(`🚀 LayerZero Call API triggered with ${timeoutMs}ms timeout`);
+
+    // Create processor instance
+    const processor = new TransactionProcessor();
+
+    // Process transactions with timeout
+    const result = await processor.detectAndProcessTransactions(timeoutMs);
+
+    // Calculate processing time
+    const processingTime = Date.now() - startTime;
+
+    // Return results
+    return NextResponse.json({
+      success: true,
+      result,
+      processingTime,
+      timestamp: new Date().toISOString()
+    }, { status: 200 });
+
+  } catch (error: any) {
+    console.error('❌ API Error:', error);
+    
+    const processingTime = Date.now() - startTime;
+    
+    return NextResponse.json({
+      success: false,
+      error: error.message || 'Unknown error occurred',
+      processingTime,
+      timestamp: new Date().toISOString()
+    }, { status: 500 });
+  }
+}
+
+// GET endpoint for health check
+export async function GET() {
+  return NextResponse.json({
+    status: 'healthy',
+    message: 'LayerZero Call API is ready',
+    timestamp: new Date().toISOString()
+  });
+}

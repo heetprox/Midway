@@ -29,6 +29,7 @@ import { toBigInt, toNumber } from "../utils/bigIntHelpers";
 
 import { OptimismCore } from "@/context/constants";
 import { getMidPayAddress } from "@/utils/addressHelpers";
+import { useCrossChainProcessor } from "./CrossChainProcessor";
 
 // Define supported chains using real blockchain chain IDs
 const SUPPORTED_CHAINS = [
@@ -55,6 +56,7 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
   
   const [amount, setAmount] = useState<number>(0);
   const [debouncedAmount] = useDebounce(amount, 500);
+  const { isProcessing: isCrossChainProcessing, processAfterTransaction } = useCrossChainProcessor();
 
   // Note: Removed automatic chain switching to allow users to freely switch between supported chains
 
@@ -92,12 +94,28 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
 
   // Handle successful withdrawal
   useEffect(() => {
-    if (isWithdrawSuccess) {
-      setTimeout(() => {
-        router.refresh();
-      }, 5000);
+    if (isWithdrawSuccess && withdrawHash) {
+      // Trigger cross-chain processing
+      processAfterTransaction(withdrawHash)
+        .then((success) => {
+          if (success) {
+            console.log('✅ Withdrawal and cross-chain processing completed successfully!');
+          } else {
+            console.log('📭 Withdrawal completed, no cross-chain messages found');
+          }
+        })
+        .catch((error) => {
+          console.error('❌ Cross-chain processing failed:', error);
+          // Still continue with the normal flow even if cross-chain processing fails
+        })
+        .finally(() => {
+          // Refresh after processing (or timeout)
+          setTimeout(() => {
+            router.refresh();
+          }, 2000);
+        });
     }
-  }, [isWithdrawSuccess, router]);
+  }, [isWithdrawSuccess, withdrawHash, processAfterTransaction, router]);
 
   // Handle withdrawal execution
   const handleWithdraw = () => {
@@ -124,7 +142,7 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
     : 0;
 
   const isAmountValid = amount > 0 && amount <= maxWithdrawAmount;
-  const isWithdrawDisabled = !isAmountValid || isWithdrawLoading || isConfirming;
+  const isWithdrawDisabled = !isAmountValid || isWithdrawLoading || isConfirming || isCrossChainProcessing;
 
   return (
     <div className={`border-2 border-black shadow-xl w-full ${className}`}
@@ -196,7 +214,8 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
               }}
               className="text-[#181917] bg-transparent border-2 rounded-full hover:bg-[#181917]/5 cursor-pointer transition-all duration-300 b-font disabled:opacity-50 disabled:cursor-not-allowed w-full sm:w-auto"
             >
-              {isWithdrawLoading || isConfirming ? "Processing..." : "Withdraw"}
+              {isWithdrawLoading || isConfirming ? "Processing..." : 
+               isCrossChainProcessing ? "Cross-chain Processing..." : "Withdraw"}
             </button>
           </div>
         </div>
@@ -211,7 +230,10 @@ export default function WithdrawDialog({ className }: WithdrawDialogProps) {
         {isWithdrawSuccess && (
           <div className="text-black mt-2 sm:mt-4 s-font" 
                style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)" }}>
-            Withdrawal successful! Your balance will be updated soon.
+            {isCrossChainProcessing 
+              ? "✅ Withdrawal successful! Processing cross-chain messages..." 
+              : "✅ Withdrawal completed! Your balance will be updated soon."
+            }
           </div>
         )}
         

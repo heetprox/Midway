@@ -16,6 +16,7 @@ import { useRouter } from "next/navigation";
 import type { Address, Hash } from "viem";
 import { toBigInt } from "@/utils/bigIntHelpers";
 import ChainSelector from "./ChainSelector";
+import { useCrossChainProcessor } from "./CrossChainProcessor";
 
 interface DepositDialogProps {
   className?: string;
@@ -27,7 +28,9 @@ export default function DepositDialog({ className }: DepositDialogProps) {
   const [amount, setAmount] = useState<number>(0);
   const [debouncedAmount] = useDebounce(amount, 500);
   const [needsApproval, setNeedsApproval] = useState<boolean>(false);
+  const [crossChainStatus, setCrossChainStatus] = useState<string>('');
   const router = useRouter();
+  const { isProcessing: isCrossChainProcessing, processAfterTransaction } = useCrossChainProcessor();
 
   // Read token allowance
   const {
@@ -77,12 +80,33 @@ export default function DepositDialog({ className }: DepositDialogProps) {
 
   // Handle successful deposit
   useEffect(() => {
-    if (isDepositSuccess) {
-      setTimeout(() => {
-        router.refresh();
-      }, 5000);
+    if (isDepositSuccess && depositHash) {
+      setCrossChainStatus('🔍 Scanning all chains for pending messages...');
+      
+      // Trigger cross-chain processing
+      processAfterTransaction(depositHash)
+        .then((success) => {
+          if (success) {
+            setCrossChainStatus('✅ Cross-chain messages processed successfully!');
+            console.log('✅ Deposit and cross-chain processing completed successfully!');
+          } else {
+            setCrossChainStatus('📭 No cross-chain messages found - deposit complete!');
+            console.log('📭 Deposit completed, no cross-chain messages found');
+          }
+        })
+        .catch((error) => {
+          setCrossChainStatus('⚠️ Cross-chain processing failed, but deposit was successful');
+          console.error('❌ Cross-chain processing failed:', error);
+          // Still continue with the normal flow even if cross-chain processing fails
+        })
+        .finally(() => {
+          // Refresh after processing (or timeout)
+          setTimeout(() => {
+            router.refresh();
+          }, 3000);
+        });
     }
-  }, [isDepositSuccess, router]);
+  }, [isDepositSuccess, depositHash, processAfterTransaction, router]);
 
   const handleApprove = () => {
     if (!chainId) return;
@@ -162,7 +186,7 @@ export default function DepositDialog({ className }: DepositDialogProps) {
                 {isApproveLoading ? "Approving..." : "Approve"}
               </button>
             )}
-            {!needsApproval && (
+            {!needsApproval && !isDepositSuccess && (
               <button
                 style={{
                   padding: "clamp(0.5rem, 1vw, 1rem)",
@@ -176,6 +200,18 @@ export default function DepositDialog({ className }: DepositDialogProps) {
                 {isDepositLoading ? "Depositing..." : "Deposit"}
               </button>
             )}
+            {isDepositSuccess && isCrossChainProcessing && (
+              <div 
+                style={{
+                  padding: "clamp(0.5rem, 1vw, 1rem)",
+                  boxShadow: "clamp(5px, 1vw, 10px) clamp(5px, 1vw, 10px) 1px rgba(0, 0, 0, 1)",
+                  fontSize: "clamp(0.875rem, 2vw, 1rem)"
+                }}
+                className="text-[#181917] bg-yellow-100 border-2 rounded-full w-full sm:w-auto text-center b-font"
+              >
+                🔄 Processing Cross-chain...
+              </div>
+            )}
           </div>
         </div>
         {(isDepositLoading || isApproveLoading) && (
@@ -187,7 +223,10 @@ export default function DepositDialog({ className }: DepositDialogProps) {
         {isDepositSuccess && (
           <div className="text-black mt-2 sm:mt-4 s-font" 
                style={{ fontSize: "clamp(0.75rem, 2vw, 0.875rem)" }}>
-            Deposit successful! Your balance will be updated soon.
+            {isCrossChainProcessing 
+              ? " Deposit successful! Processing cross-chain messages... Wait for a Minute..." 
+              : " Deposit completed! Your balance will be updated soon."
+            }
           </div>
         )}
       </div>
